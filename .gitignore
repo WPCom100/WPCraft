@@ -1,5 +1,6 @@
 # Development MC Server
 /devServer
+*.bat
 
 # Workspaces
 *.code-workspace
