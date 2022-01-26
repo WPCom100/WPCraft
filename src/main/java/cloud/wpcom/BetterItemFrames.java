@@ -10,7 +10,6 @@ import org.bukkit.block.Container;
 
 public class BetterItemFrames implements Listener {
 
-
     // Blocks rotation of item frames unless holding an item frame in the right hand
     @EventHandler
     public void onEntityInteraction(PlayerInteractEntityEvent event) {
