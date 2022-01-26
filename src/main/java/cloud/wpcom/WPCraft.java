@@ -7,8 +7,8 @@ public class WPCraft extends JavaPlugin {
     @Override
     public void onEnable() {
         
-        getServer().getPluginManager().registerEvents(new EventListener(), this);
-        getLogger().info("WPCraft loaded!");
+        getServer().getPluginManager().registerEvents(new BetterItemFrames(), this);
+        getLogger().info("BetterItemFrames loaded!");
     }
 
     @Override
