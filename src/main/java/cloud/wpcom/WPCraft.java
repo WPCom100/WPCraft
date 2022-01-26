@@ -17,7 +17,7 @@ public class WPCraft extends JavaPlugin {
 
         // Load ServerBroadcast
         getCommand("bc").setExecutor(new ServerBroadcast());
-        getLogger().info("BetterItemFrames loaded!");
+        getLogger().info("ServerBroadcast loaded!");
 
     }
 
