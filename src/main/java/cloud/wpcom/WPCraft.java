@@ -1,6 +1,11 @@
 package cloud.wpcom;
 
 import org.bukkit.plugin.java.JavaPlugin;
+
+import cloud.wpcom.commands.ServerBroadcast;
+import cloud.wpcom.events.BetterItemFrames;
+import cloud.wpcom.events.JoinMessages;
+
 import org.bukkit.ChatColor;
 
 public class WPCraft extends JavaPlugin {
@@ -14,6 +19,10 @@ public class WPCraft extends JavaPlugin {
         // Load BetterItemFrames
         getServer().getPluginManager().registerEvents(new BetterItemFrames(), this);
         getLogger().info("BetterItemFrames loaded!");
+
+        // Load JoinMessages
+        getServer().getPluginManager().registerEvents(new JoinMessages(), this);
+        getLogger().info("JoinMessages loaded!");
 
         // Load ServerBroadcast
         getCommand("bc").setExecutor(new ServerBroadcast());

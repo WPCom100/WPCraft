@@ -1,4 +1,4 @@
-package cloud.wpcom;
+package cloud.wpcom.events;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,9 +16,9 @@ public class BetterItemFrames implements Listener {
 
         // If the entity that was right clicked is an Item Frame
         if (event.getRightClicked() instanceof ItemFrame) {
-            // If the Item Frame is not empty
+            // And the Item Frame is not empty
             if (((ItemFrame) event.getRightClicked()).getItem().getType() != Material.AIR) {
-                // If the player is not holding an item frame in their main hand
+                // And player is not holding an item frame in their main hand
                 if (event.getPlayer().getEquipment().getItemInMainHand().getType() != Material.ITEM_FRAME) {
 
                     // Cancles the Item Frame rotation
