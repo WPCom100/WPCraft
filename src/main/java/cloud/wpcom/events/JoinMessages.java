@@ -11,7 +11,7 @@ import cloud.wpcom.WPCraft;
 public class JoinMessages implements Listener {
     
     @EventHandler
-    public void joinMessages(PlayerJoinEvent event) {
+    public void onPlayerJoin(PlayerJoinEvent event) {
 
         event.setJoinMessage(WPCraft.PREFIX                                                                  // Prefix
                 + '[' + ChatColor.GREEN + '+' + ChatColor.WHITE + "] "                                       // Join indicator
@@ -20,7 +20,7 @@ public class JoinMessages implements Listener {
     }
     
     @EventHandler
-    public void leaveMessages(PlayerQuitEvent event) {
+    public void onPlayerQuit(PlayerQuitEvent event) {
 
         event.setQuitMessage(WPCraft.PREFIX                                                                                                       // Prefix
                             + '[' + ChatColor.RED + '-' + ChatColor.WHITE + ']'                                                                   // Leave indicator
