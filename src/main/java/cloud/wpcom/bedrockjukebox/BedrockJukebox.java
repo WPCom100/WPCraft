@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import org.bukkit.Location;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Jukebox;
+import cloud.wpcom.WPCraft;
 
 public class BedrockJukebox {
 
@@ -18,6 +19,7 @@ public class BedrockJukebox {
     public void removeJukebox(Jukebox jb) {
 
         jukeboxes.remove(getJukeboxAt(jb.getLocation()));
+        WPCraft.server.broadcastMessage("Registered jukebox removed!");
 
     }
 
