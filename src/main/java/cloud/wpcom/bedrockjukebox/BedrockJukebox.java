@@ -47,7 +47,7 @@ public class BedrockJukebox {
 
         for (JukeboxWrapper j : jukeboxes) {
 
-            if (j.getblock().getLocation().equals(b.getBlock().getLocation())) {
+            if (j.getBlock().getLocation().equals(b.getBlock().getLocation())) {
 
                 return true;
 

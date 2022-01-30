@@ -15,7 +15,7 @@ public class BedrockJukebox implements CommandExecutor {
 
     for (JukeboxWrapper j : WPCraft.jb.getJukeboxes()) {
 
-        sender.getServer().broadcastMessage(j.getblock().toString() + j.getLocation().toString());
+        sender.getServer().broadcastMessage(j.getBlock().toString() + j.getLocation().toString());
 
     }
 

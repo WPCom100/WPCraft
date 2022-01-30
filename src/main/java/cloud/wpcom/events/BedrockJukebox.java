@@ -13,8 +13,28 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.block.BlockState;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
 
 public class BedrockJukebox implements Listener {
+
+    private final WPCraft wpcraft;
+
+    public BedrockJukebox(WPCraft wpcraft) {
+        this.wpcraft = wpcraft;
+    }
+
+    @EventHandler
+    public void onBlockDispense(InventoryMoveItemEvent event) {
+
+        // Checks if the item moved to an input hopper on a registred Jukebox
+        for (JukeboxWrapper j : WPCraft.jb.getJukeboxes()) {
+            if (event.getDestination().equals(j.getInputHopperInventory())) {
+                j.playRecord(event.getItem(), wpcraft);
+            }
+
+        }
+
+    }
 
     @EventHandler
     public void onBlockPlaced(BlockPlaceEvent event) {
