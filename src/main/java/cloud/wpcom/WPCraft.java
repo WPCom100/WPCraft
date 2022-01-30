@@ -1,11 +1,6 @@
 package cloud.wpcom;
 
 import org.bukkit.plugin.java.JavaPlugin;
-import cloud.wpcom.commands.ServerBroadcast;
-import cloud.wpcom.events.BedrockJukebox;
-import cloud.wpcom.events.BetterItemFrames;
-import cloud.wpcom.events.JoinMessages;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
 
@@ -22,20 +17,20 @@ public class WPCraft extends JavaPlugin {
         server = getServer();
 
         // Load JoinMessages
-        getServer().getPluginManager().registerEvents(new JoinMessages(), this);
+        getServer().getPluginManager().registerEvents(new cloud.wpcom.events.JoinMessages(), this);
         getLogger().info("JoinMessages loaded!");
 
         // Load BetterItemFrames
-        getServer().getPluginManager().registerEvents(new BetterItemFrames(), this);
+        getServer().getPluginManager().registerEvents(new cloud.wpcom.events.BetterItemFrames(), this);
         getLogger().info("BetterItemFrames loaded!");
 
         // Load BedrockJukebox
-        // TODO Load jukeboxes on world load
-        getServer().getPluginManager().registerEvents(new BedrockJukebox(), this);
+        getServer().getPluginManager().registerEvents(new cloud.wpcom.events.BedrockJukebox(), this);
+        getCommand("jb").setExecutor(new cloud.wpcom.commands.BedrockJukebox());
         getLogger().info("BedrockJukebox loaded!");
 
         // Load ServerBroadcast
-        getCommand("bc").setExecutor(new ServerBroadcast());
+        getCommand("bc").setExecutor(new cloud.wpcom.commands.ServerBroadcast());
         getLogger().info("ServerBroadcast loaded!");
 
     }
