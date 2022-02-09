@@ -8,12 +8,14 @@ import org.bukkit.Material;
 import org.bukkit.block.Jukebox;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.block.BlockState;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 public class BedrockJukebox implements Listener {
 
@@ -32,7 +34,7 @@ public class BedrockJukebox implements Listener {
                 j.playRecord(event.getItem(), wpcraft);
             }
 
-        }
+        } // TODO CHECK IF THE ITEM IS A DISC?? IS THIS NEEDED
 
     }
 
@@ -112,18 +114,17 @@ public class BedrockJukebox implements Listener {
 
                 // If Jukebox is already registred, ignore
                 if (WPCraft.jb.jukeboxExist(bs)) {
-                    WPCraft.server.broadcastMessage("Registered jukebox found in loaded chunk!");
                     return;
 
                 // If Jukebox was not registred, register it
                 } else {
                     WPCraft.jb.addJukebox((Jukebox) bs);
-                    WPCraft.server.broadcastMessage("Unregistred Jukebox found in loaded chunk!");
 
                 }
             }
         }
-    }
+    } // TODO HANDLE CHECKING FOR HOPPERS 
+    // TODO HANDLE SERVER RELOADS AS WELL
 
     @EventHandler
     public void onWorldLoad(WorldLoadEvent event) {
@@ -136,17 +137,37 @@ public class BedrockJukebox implements Listener {
 
                     // If Jukebox is already registred, ignore
                     if (WPCraft.jb.jukeboxExist(bs)) {
-                        WPCraft.server.getLogger().info("Registered jukebox found in loaded chunk!");
                         return;
 
-                    // If Jukebox was not registred, register it    
+                        // If Jukebox was not registred, register it    
                     } else {
-                    WPCraft.jb.addJukebox((Jukebox) bs);
-                    WPCraft.server.getLogger().info("Unregistred Jukebox found in loaded chunk! Registered!");
+                        WPCraft.jb.addJukebox((Jukebox) bs);
 
                     }
                 }
             }
         }
+    } // TODO HANDLE CHECKING FOR HOPPERS 
+    
+    @EventHandler
+    public void onBlockRightClick(PlayerInteractEvent event) {
+
+        // If the event was a right click on a block
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK)
+            return;
+        // And the block is Jukebox
+        if (event.getClickedBlock().getType() != Material.JUKEBOX)
+            return;
+        // Find registered Jukebox
+        for (JukeboxWrapper j : WPCraft.jb.getJukeboxes()) {
+            if (j.getLocation().equals(event.getClickedBlock().getLocation())) {
+                if (j.isPlaying()) {
+                    j.durationTask.cancel();
+                    // TODO ADD NEXT DISK IF ONE IS WAITING TO ENTER FROM INPUT HOPPER
+                    // ADD CHECK TO SEE IF IT HAS AN INPUT HOPPER BEFORE HAND
+                }
+            }
+        }
+
     }
 }

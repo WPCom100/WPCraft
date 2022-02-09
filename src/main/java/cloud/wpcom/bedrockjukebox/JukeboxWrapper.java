@@ -8,17 +8,18 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import cloud.wpcom.WPCraft;
+import cloud.wpcom.tasks.DiscDuration;
 
 public class JukeboxWrapper {
 
     private Jukebox jukebox;
-    private JukeboxLooper looper;
     private Location location;
     private boolean hasInputHopper = false;
     private boolean hasOutputHopper = false;
     private Block inputHopper;
     private Block outputHopper;
     private boolean isPlaying = false;
+    public DiscDuration durationTask;
     
     public JukeboxWrapper(Jukebox j) {
         this.jukebox = j;
@@ -88,12 +89,21 @@ public class JukeboxWrapper {
         hasOutputHopper = false;
     }
 
+    public void setPlaying(boolean isPlaying) {
+        this.isPlaying = isPlaying;
+    }
+
+    public boolean isPlaying() {
+        return isPlaying;
+    }
+
     public void playRecord(ItemStack record, WPCraft wpcraft) {
         
         jukebox.setRecord(record);
         if (jukebox.update())
             isPlaying = true;
 
-        looper = new JukeboxLooper(this, wpcraft);
+        durationTask = new DiscDuration(this, wpcraft);
+        durationTask.runTaskLater(wpcraft, JBUtil.getDiskDuration(record));
     }
 }
