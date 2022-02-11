@@ -19,7 +19,18 @@ public class DiscDuration extends BukkitRunnable {
     // Runs at the supposed end of the playing disc
     @Override
     public void run() { //TODO HANDLE IF HOPPER IS FULL
-        jukeboxw.setPlaying(false);
+        // If the Jukebox has an output hopper, place the current playing disc into it
+        if (jukeboxw.hasOutputHopper()) {
+            jukeboxw.getInputHopperInventory().addItem(new ItemStack(jukeboxw.getBlock().getPlaying()));
+            //TODO HANDLE IF HOPPER IS FULL
+            jukeboxw.getBlock().setRecord(new ItemStack(Material.AIR));
+        }
+
+        // If a disc is waiting in the input hopper, play it next
+        if (jukeboxw.hasWaitingDisc() != -1)
+            jukeboxw.playRecord(jukeboxw.popWaitingDisc(), plugin);
+    }
+
 
         // If the Jukebox has an output hopper, place the current playing disc into it
         if (jukeboxw.hasOutputHopper()) {
@@ -47,6 +58,7 @@ public class DiscDuration extends BukkitRunnable {
             }
         };
         playTask.runTask(plugin);
+
     }
 
     // If a disc is waiting in the input hopper, play it next

@@ -138,4 +138,18 @@ public class JukeboxWrapper {
         // Otherwise
         return -1;
     }
+
+    // Gets the location of the first disc, and returns it as an ItemStack
+    // Returns AIR if no disc is found
+    public ItemStack popWaitingDisc() {
+        int discIndex = getWaitingDisc();
+        ItemStack waitingDisc = new ItemStack(Material.AIR);
+        if (discIndex == -1)
+            return waitingDisc;
+        else {
+            waitingDisc = getInputHopperInventory().getItem(discIndex).clone();
+            getInputHopperInventory().clear(discIndex);
+            return waitingDisc;
+        }
+    }
 }

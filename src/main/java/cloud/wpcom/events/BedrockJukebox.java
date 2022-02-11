@@ -33,6 +33,7 @@ public class BedrockJukebox implements Listener {
         for (JukeboxWrapper j : WPCraft.jb.getJukeboxes()) {
             if (!event.getDestination().equals(j.getInputHopperInventory()))
                 return;
+
             // If the item is a record and the Jukebox is not playing a disc
             if ((event.getItem().getType().isRecord()) && (!j.isPlaying())) {
                 // Pop the record and play it
@@ -40,6 +41,7 @@ public class BedrockJukebox implements Listener {
                 event.setItem(new ItemStack(Material.AIR));
             }
         } // TODO CHECK FOR LOCKED HOPPER
+
     }
 
     @EventHandler
