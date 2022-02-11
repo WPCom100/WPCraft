@@ -27,9 +27,8 @@ public class DiscDuration extends BukkitRunnable {
         }
 
         // If a disc is waiting in the input hopper, play it next
-        if (jukeboxw.hasWaitingDisc() != -1)
+        if (jukeboxw.getWaitingDisc() != -1)
             jukeboxw.playRecord(jukeboxw.popWaitingDisc(), plugin);
-    }
 
 
         // If the Jukebox has an output hopper, place the current playing disc into it
