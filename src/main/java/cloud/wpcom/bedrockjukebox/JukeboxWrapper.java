@@ -1,6 +1,7 @@
 package cloud.wpcom.bedrockjukebox;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Jukebox;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Hopper;
@@ -97,13 +98,43 @@ public class JukeboxWrapper {
         return isPlaying;
     }
 
+    // Play the given record, creating a task to continue when the record is finished
     public void playRecord(ItemStack record, WPCraft wpcraft) {
-        
         jukebox.setRecord(record);
         if (jukebox.update())
             isPlaying = true;
 
         durationTask = new DiscDuration(this, wpcraft);
         durationTask.runTaskLater(wpcraft, JBUtil.getDiskDuration(record));
+    }
+
+    public int hasWaitingDisc() {
+        // Check if the jukebox has an input hopper
+        if (hasInputHopper != true)
+            return -1;
+
+        // Check if the input hopper has a disc waiting
+        int discIndex = -1;
+        for (ItemStack i : getInputHopperInventory().getContents()) {
+            if (i.getType().isRecord())
+                return discIndex;
+        }
+
+        // Otherwise
+        return -1;
+    }
+
+    // Gets the location of the first disc, and returns it as an ItemStack
+    // Returns AIR if no disc is found
+    public ItemStack popWaitingDisc() {
+        int discIndex = hasWaitingDisc();
+        ItemStack waitingDisc = new ItemStack(Material.AIR);
+        if (discIndex == -1)
+            return waitingDisc;
+        else {
+            waitingDisc = getInputHopperInventory().getItem(discIndex).clone();
+            getInputHopperInventory().clear(discIndex);
+            return waitingDisc;
+        }
     }
 }
