@@ -30,11 +30,12 @@ public class BedrockJukebox implements Listener {
 
         // Checks if the item moved to an input hopper on a registred Jukebox
         for (JukeboxWrapper j : WPCraft.jb.getJukeboxes()) {
-            if (event.getDestination().equals(j.getInputHopperInventory())) {
-                j.playRecord(event.getItem(), wpcraft);
-            }
+            if (!event.getDestination().equals(j.getInputHopperInventory()))
+                return;
+            // If the Jukebox
+            // if(!j.isPlaying())
 
-        } // TODO CHECK IF THE ITEM IS A DISC?? IS THIS NEEDED
+        } // TODO CHECK IF THE ITEM IS A DISC
 
     }
 
