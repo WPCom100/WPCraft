@@ -53,12 +53,24 @@ public class JukeboxWrapper {
         return inputHopper;
     }
 
-    public Inventory getInputHopperInventory() {
-        return ((org.bukkit.block.Hopper) this.getInputHopperBlock().getState()).getInventory();
-    }
-    
     public Hopper getInputHopper() {
         return (Hopper) inputHopper.getBlockData();
+    }
+
+    public Inventory getInputHopperInventory() {
+        return ((org.bukkit.block.Hopper) getInputHopperBlock().getState()).getInventory();
+    }
+
+    // Returns AIR if no disc is found
+    public ItemStack popInputHopperAtIndex(int index) {
+        ItemStack waitingDisc = new ItemStack(Material.AIR);
+        if (index == -1)
+            return waitingDisc;
+        else {
+            waitingDisc = getInputHopperInventory().getItem(index).clone();
+            getInputHopperInventory().clear(index);
+            return waitingDisc;
+        }
     }
 
     public void removeInputHopper() {
@@ -78,12 +90,12 @@ public class JukeboxWrapper {
         return outputHopper;
     }
 
-    public Inventory getOutputHopperInventory() {
-        return ((org.bukkit.block.Hopper) this.getOutputHopperBlock().getState()).getInventory();
-    }
-
     public Hopper getOutputHopper() {
         return (Hopper) outputHopper.getBlockData();
+    }
+
+    public Inventory getOutputHopperInventory() {
+        return ((org.bukkit.block.Hopper) this.getOutputHopperBlock().getState()).getInventory();
     }
 
     public void removeOutputHopper() {
@@ -101,6 +113,7 @@ public class JukeboxWrapper {
     // Play the given record, creating a task to continue when the record is finished
     public void playRecord(ItemStack record, WPCraft wpcraft) {
         jukebox.setRecord(record);
+        WPCraft.server.broadcastMessage("Playing Disk:" + record.toString());
         if (jukebox.update())
             isPlaying = true;
 
@@ -108,15 +121,17 @@ public class JukeboxWrapper {
         durationTask.runTaskLater(wpcraft, JBUtil.getDiskDuration(record));
     }
 
-    public int hasWaitingDisc() {
+    public int getWaitingDisc() {
         // Check if the jukebox has an input hopper
         if (hasInputHopper != true)
             return -1;
 
-        // Check if the input hopper has a disc waiting
+        WPCraft.server.broadcastMessage("Has input hopper, looking for disc in hopper");
+        // Check if the input hopper has a disc in it
         int discIndex = -1;
-        for (ItemStack i : getInputHopperInventory().getContents()) {
-            if (i.getType().isRecord())
+        for (ItemStack i : getInputHopperInventory().getStorageContents()) {
+            ++discIndex;
+            if (i instanceof ItemStack && i.getType().isRecord())
                 return discIndex;
         }
 
@@ -127,7 +142,7 @@ public class JukeboxWrapper {
     // Gets the location of the first disc, and returns it as an ItemStack
     // Returns AIR if no disc is found
     public ItemStack popWaitingDisc() {
-        int discIndex = hasWaitingDisc();
+        int discIndex = getWaitingDisc();
         ItemStack waitingDisc = new ItemStack(Material.AIR);
         if (discIndex == -1)
             return waitingDisc;

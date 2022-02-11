@@ -13,6 +13,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.WorldLoadEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.block.BlockState;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -32,10 +33,14 @@ public class BedrockJukebox implements Listener {
         for (JukeboxWrapper j : WPCraft.jb.getJukeboxes()) {
             if (!event.getDestination().equals(j.getInputHopperInventory()))
                 return;
-            // If the Jukebox
-            // if(!j.isPlaying())
 
-        } // TODO CHECK IF THE ITEM IS A DISC
+            // If the item is a record and the Jukebox is not playing a disc
+            if ((event.getItem().getType().isRecord()) && (!j.isPlaying())) {
+                // Pop the record and play it
+                j.playRecord(event.getItem(), wpcraft);
+                event.setItem(new ItemStack(Material.AIR));
+            }
+        } // TODO CHECK FOR LOCKED HOPPER
 
     }
 
@@ -106,69 +111,58 @@ public class BedrockJukebox implements Listener {
         }
     }
 
+    // Checks chunks as they load for jukeboxes to register
     @EventHandler
     public void onChunkLoad(ChunkLoadEvent event) {
+        checkChunkForJukebox(event.getChunk());
+    }
 
-        // Check loaded chunk for Jukeboxes
-        for (BlockState bs : event.getChunk().getTileEntities()) {
-            if (bs instanceof Jukebox) {
-
-                // If Jukebox is already registred, ignore
-                if (WPCraft.jb.jukeboxExist(bs)) {
-                    return;
-
-                // If Jukebox was not registred, register it
-                } else {
-                    WPCraft.jb.addJukebox((Jukebox) bs);
-
-                }
-            }
-        }
-    } // TODO HANDLE CHECKING FOR HOPPERS 
-    // TODO HANDLE SERVER RELOADS AS WELL
-
+    // Get all loaded chunks and checks for jukeboxes to register
     @EventHandler
     public void onWorldLoad(WorldLoadEvent event) {
-
-        // Get all loaded chunks
         for (Chunk c : event.getWorld().getLoadedChunks()) {
-            // Check each chunk for a jukebox
-            for (BlockState bs : c.getTileEntities()) {
-                if (bs instanceof Jukebox) {
-
-                    // If Jukebox is already registred, ignore
-                    if (WPCraft.jb.jukeboxExist(bs)) {
-                        return;
-
-                        // If Jukebox was not registred, register it    
-                    } else {
-                        WPCraft.jb.addJukebox((Jukebox) bs);
-
-                    }
-                }
-            }
+            checkChunkForJukebox(c);
         }
-    } // TODO HANDLE CHECKING FOR HOPPERS 
+    } 
+
+    // Registers Jukeboxes in given chunk
+    public void checkChunkForJukebox(Chunk c) {
+        for (BlockState bs : c.getTileEntities()) {
+            if (bs instanceof Jukebox) {
+                // If Jukebox is already registred, ignore
+                if (WPCraft.jb.jukeboxExist(bs))
+                    return;
+
+                // If Jukebox was not registred, register it    
+                else
+                    WPCraft.jb.addJukebox((Jukebox) bs);
+            }
+        } // TODO HANDLE CHECKING FOR HOPPERS 
+    }
     
+    // Cancle playing of a disc on jukebox eject, as well as associated tasks
+    // This triggers an 'update' of the input hopper
     @EventHandler
     public void onBlockRightClick(PlayerInteractEvent event) {
-
         // If the event was a right click on a block
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK)
             return;
         // And the block is Jukebox
         if (event.getClickedBlock().getType() != Material.JUKEBOX)
             return;
-        // Find registered Jukebox
+        // Find registered Jukebox and check if it is
         for (JukeboxWrapper j : WPCraft.jb.getJukeboxes()) {
             if (j.getLocation().equals(event.getClickedBlock().getLocation())) {
                 if (j.isPlaying()) {
                     j.durationTask.cancel();
-                    // TODO ADD NEXT DISK IF ONE IS WAITING TO ENTER FROM INPUT HOPPER
-                    // ADD CHECK TO SEE IF IT HAS AN INPUT HOPPER BEFORE HAND
                 }
+                break;
             }
         }
 
     }
 }
+
+// TODO CHECK FOR PLAYER DISC INSERTED DIRECTLY INTO HOPPER
+// TODO CHECK FOR UNLOCKING HOPPERS FOR DISCS 
+// TODO HANDLE SERVER RELOADS AS WELL !LPLPLP!

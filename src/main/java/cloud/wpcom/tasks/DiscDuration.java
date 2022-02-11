@@ -18,9 +18,7 @@ public class DiscDuration extends BukkitRunnable {
     
     // Runs at the supposed end of the playing disc
     @Override
-    public void run() {
-        jukeboxw.setPlaying(false);
-
+    public void run() { //TODO HANDLE IF HOPPER IS FULL
         // If the Jukebox has an output hopper, place the current playing disc into it
         if (jukeboxw.hasOutputHopper()) {
             jukeboxw.getInputHopperInventory().addItem(new ItemStack(jukeboxw.getBlock().getPlaying()));
@@ -33,9 +31,42 @@ public class DiscDuration extends BukkitRunnable {
             jukeboxw.playRecord(jukeboxw.popWaitingDisc(), plugin);
     }
 
+
+        // If the Jukebox has an output hopper, place the current playing disc into it
+        if (jukeboxw.hasOutputHopper()) {
+            WPCraft.server
+                    .broadcastMessage("Output Disc to Output Hopper " + jukeboxw.getBlock().getPlaying().toString());
+            jukeboxw.getOutputHopperInventory().addItem(new ItemStack(jukeboxw.getBlock().getPlaying()));
+            jukeboxw.getBlock().setRecord(new ItemStack(Material.AIR));
+            jukeboxw.getBlock().update();
+        }
+        playNext();
+    }
+    
+    // Runs when a player cancles the playing of a disc manuely
     @Override
     public void cancel() {
-        super.cancel(); // TODO MIGHT NOT BE NEEDED
+        WPCraft.server.broadcastMessage("Duration task cancled");
+        jukeboxw.setPlaying(false);
+        super.cancel();
+        
+        // Schedule next disc to play after disc is ejected in next tick
+        BukkitRunnable playTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                playNext();
+            }
+        };
+        playTask.runTask(plugin);
+
     }
 
+    // If a disc is waiting in the input hopper, play it next
+    public void playNext() {
+        int waitingDiscIndex = jukeboxw.getWaitingDisc();
+        if (waitingDiscIndex != -1) {
+            WPCraft.server.broadcastMessage("Jukebox has a waiting disk at: " + waitingDiscIndex);
+            jukeboxw.playRecord(jukeboxw.popInputHopperAtIndex(waitingDiscIndex), plugin);
+        }
+    }
 }
