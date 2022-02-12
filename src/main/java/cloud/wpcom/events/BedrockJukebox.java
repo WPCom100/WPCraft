@@ -71,7 +71,8 @@ public class BedrockJukebox implements Listener {
                     BukkitRunnable playTask = new BukkitRunnable() {
                         @Override
                         public void run() {
-                            j.playRecord(j.popWaitingDisc(), wpcraft);
+                            if (j.hasInputHopper())
+                                j.playRecord(j.popWaitingDisc(), wpcraft);
                         }
                     };
                     playTask.runTask(wpcraft);
@@ -162,10 +163,10 @@ public class BedrockJukebox implements Listener {
         for (Chunk c : event.getWorld().getLoadedChunks()) {
             checkChunkForJukebox(c);
         }
-    } 
+    }
 
     // Registers Jukeboxes in given chunk
-    public void checkChunkForJukebox(Chunk c) {
+    public void checkChunkForJukebox(Chunk c) { // TODO MISLEADING FUNCTION NAME, 
         for (BlockState bs : c.getTileEntities()) {
             if (bs instanceof Jukebox) {
                 // If Jukebox is already registred, ignore
@@ -175,7 +176,7 @@ public class BedrockJukebox implements Listener {
                 else
                     WPCraft.jb.addJukebox((Jukebox) bs);
             }
-        } // TODO HANDLE CHECKING FOR HOPPERS 
+        }
     }
     
     // Cancle playing of a disc on jukebox eject, as well as associated tasks
@@ -201,6 +202,4 @@ public class BedrockJukebox implements Listener {
     }
 }
 
-// TODO CHECK FOR PLAYER DISC INSERTED DIRECTLY INTO HOPPER
 // TODO CHECK FOR UNLOCKING HOPPERS FOR DISCS 
-// TODO HANDLE SERVER RELOADS AS WELL !LPLPLP!

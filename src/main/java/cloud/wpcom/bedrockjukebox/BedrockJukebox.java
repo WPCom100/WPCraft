@@ -12,7 +12,10 @@ public class BedrockJukebox {
 
     public void addJukebox(Jukebox jb) {
 
-        jukeboxes.add(new JukeboxWrapper(jb));
+        JukeboxWrapper j = new JukeboxWrapper(jb);
+        jukeboxes.add(j);
+        JBUtil.registerInputHoppers(j);
+        JBUtil.registerOutputHopper(j);
 
     }
 

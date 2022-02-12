@@ -22,12 +22,13 @@ public class DiscDuration extends BukkitRunnable {
         // If the Jukebox has an output hopper, place the current playing disc into it
         if (j.hasOutputHopper()) {
             WPCraft.server
-                    .broadcastMessage("Output Disc to Output Hopper " + j.getBlock().getPlaying().toString());
+                    .broadcastMessage("Output Disc to Output Hopper " + j.getBlock().getPlaying());
+            // TODO WAS WORKING HERE, HANDLE FULL OUTPUT HOPPER. LEARNED THAT IF Hopper is not full returns empty ItemStack[], otherwise returns items that did not fit.
             j.getOutputHopperInventory().addItem(new ItemStack(j.getBlock().getPlaying()));
             j.getBlock().setRecord(new ItemStack(Material.AIR));
             j.getBlock().update();
         }
-        
+        if (j.hasInputHopper())
             playNext();
     }
     
@@ -42,7 +43,8 @@ public class DiscDuration extends BukkitRunnable {
         BukkitRunnable playTask = new BukkitRunnable() {
             @Override
             public void run() {
-                playNext();
+                if (j.hasInputHopper())
+                    playNext();
             }
         };
         playTask.runTask(plugin);

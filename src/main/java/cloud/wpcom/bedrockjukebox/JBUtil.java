@@ -6,6 +6,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Directional;
 import org.bukkit.inventory.ItemStack;
 
+import cloud.wpcom.WPCraft;
+
 public class JBUtil {
 
     // Returns the duration of a music disk in ticks
@@ -59,5 +61,54 @@ public class JBUtil {
             return true;
         }
         return false;
+    }
+
+    // Checks if a input hopper (facing) is attached to a jukebox and registers them
+    public static void registerInputHoppers(JukeboxWrapper j) { // TODO Multi hopper support, future should return block array
+        Block blockToCheck = j.getLocation().getBlock().getRelative(BlockFace.NORTH);
+        if (blockToCheck.getType() == Material.HOPPER) { // NORTH
+            if (isHopperFacing(j, blockToCheck)) {
+                WPCraft.server.broadcastMessage("Input hopper found to the north");
+                j.setInputHopperBlock(blockToCheck);
+            }
+        }
+        blockToCheck = j.getLocation().getBlock().getRelative(BlockFace.EAST);
+        if (blockToCheck.getType() == Material.HOPPER) { // EAST
+            if (isHopperFacing(j, blockToCheck)) {
+                WPCraft.server.broadcastMessage("Input hopper found to the east");
+                j.setInputHopperBlock(blockToCheck);
+            }
+        }
+        blockToCheck = j.getLocation().getBlock().getRelative(BlockFace.SOUTH);
+        if (blockToCheck.getType() == Material.HOPPER) { // SOUTH
+            if (isHopperFacing(j, blockToCheck)) {
+                WPCraft.server.broadcastMessage("Input hopper found to the south");
+                j.setInputHopperBlock(blockToCheck);
+            }
+        }
+        blockToCheck = j.getLocation().getBlock().getRelative(BlockFace.WEST);
+        if (blockToCheck.getType() == Material.HOPPER) { // WEST
+            if (isHopperFacing(j, blockToCheck)) {
+                WPCraft.server.broadcastMessage("Input hopper found to the west");
+                j.setInputHopperBlock(blockToCheck);
+            }
+        }
+        blockToCheck = j.getLocation().getBlock().getRelative(BlockFace.UP);
+        if (blockToCheck.getType() == Material.HOPPER) { // ABOVE
+            if (isHopperFacing(j, blockToCheck)) {
+                WPCraft.server.broadcastMessage("Input hopper found above");
+                j.setInputHopperBlock(blockToCheck);
+            }
+        }
+    }
+    // Checks if a output hopper is below a jukebox and registers it
+    public static void registerOutputHopper(JukeboxWrapper j) {
+        Block blockToCheck = j.getLocation().getBlock().getRelative(BlockFace.DOWN);
+        if (blockToCheck.getType() == Material.HOPPER) {
+            if (isHopperUnder(j, blockToCheck)) {
+                WPCraft.server.broadcastMessage("Output hopper found below");
+                j.setOutputHopperBlock(blockToCheck);
+            }
+        }
     }
 }

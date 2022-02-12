@@ -47,7 +47,7 @@ public class JukeboxWrapper {
     public void setInputHopperBlock(Block inputHopper) {
         this.inputHopper = inputHopper;
         hasInputHopper = true;
-        WPCraft.server.broadcastMessage("Input hopper added " + getLocation());
+        WPCraft.server.broadcastMessage("Input hopper added");
     }
 
     public Block getInputHopperBlock() {
@@ -76,7 +76,7 @@ public class JukeboxWrapper {
 
     public void removeInputHopper() {
         hasInputHopper = false;
-        WPCraft.server.broadcastMessage("Input hopper removed " + getLocation());
+        WPCraft.server.broadcastMessage("Input hopper removed ");
     }
 
     public boolean hasOutputHopper() {
@@ -86,7 +86,7 @@ public class JukeboxWrapper {
     public void setOutputHopperBlock(Block outputHopper) {
         this.outputHopper = outputHopper;
         hasOutputHopper = true;
-        WPCraft.server.broadcastMessage("Output hopper added " + getLocation());
+        WPCraft.server.broadcastMessage("Output hopper added");
     }
 
     public Block getOutputHopperBlock() {
@@ -103,7 +103,7 @@ public class JukeboxWrapper {
 
     public void removeOutputHopper() {
         hasOutputHopper = false;
-        WPCraft.server.broadcastMessage("Output hopper removed " + getLocation());
+        WPCraft.server.broadcastMessage("Output hopper removed");
     }
 
     public void setPlaying(boolean isPlaying) {
@@ -126,12 +126,6 @@ public class JukeboxWrapper {
     }
 
     public int getWaitingDisc() {
-        // Check if the jukebox has an input hopper
-        if (hasInputHopper != true)
-            return -1;
-
-        WPCraft.server.broadcastMessage("Has input hopper, looking for disc in hopper");
-        // Check if the input hopper has a disc in it
         int discIndex = -1;
         for (ItemStack i : getInputHopperInventory().getStorageContents()) {
             ++discIndex;

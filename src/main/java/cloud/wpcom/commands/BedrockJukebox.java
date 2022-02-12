@@ -12,7 +12,6 @@ public class BedrockJukebox implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] mssg) {
 
-
         for (JukeboxWrapper j : WPCraft.jb.getJukeboxes()) {
 
             //sender.getServer().broadcastMessage(j.getBlock().toString() + j.getLocation().toString());
@@ -23,4 +22,5 @@ public class BedrockJukebox implements CommandExecutor {
 
         return true;
     }
+    // TODO RELOAD COMMAND
 } 
