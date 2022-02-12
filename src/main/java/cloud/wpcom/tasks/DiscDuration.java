@@ -9,44 +9,33 @@ import cloud.wpcom.bedrockjukebox.JukeboxWrapper;
 public class DiscDuration extends BukkitRunnable {
 
     WPCraft plugin;
-    JukeboxWrapper jukeboxw;
+    JukeboxWrapper j;
 
-    public DiscDuration(JukeboxWrapper jukeboxw, WPCraft plugin) {
+    public DiscDuration(JukeboxWrapper j, WPCraft plugin) {
         this.plugin = plugin;
-        this.jukeboxw = jukeboxw;
+        this.j = j;
     }
     
     // Runs at the supposed end of the playing disc
     @Override
     public void run() { //TODO HANDLE IF HOPPER IS FULL
         // If the Jukebox has an output hopper, place the current playing disc into it
-        if (jukeboxw.hasOutputHopper()) {
-            jukeboxw.getInputHopperInventory().addItem(new ItemStack(jukeboxw.getBlock().getPlaying()));
-            //TODO HANDLE IF HOPPER IS FULL
-            jukeboxw.getBlock().setRecord(new ItemStack(Material.AIR));
-        }
-
-        // If a disc is waiting in the input hopper, play it next
-        if (jukeboxw.getWaitingDisc() != -1)
-            jukeboxw.playRecord(jukeboxw.popWaitingDisc(), plugin);
-
-
-        // If the Jukebox has an output hopper, place the current playing disc into it
-        if (jukeboxw.hasOutputHopper()) {
+        if (j.hasOutputHopper()) {
             WPCraft.server
-                    .broadcastMessage("Output Disc to Output Hopper " + jukeboxw.getBlock().getPlaying().toString());
-            jukeboxw.getOutputHopperInventory().addItem(new ItemStack(jukeboxw.getBlock().getPlaying()));
-            jukeboxw.getBlock().setRecord(new ItemStack(Material.AIR));
-            jukeboxw.getBlock().update();
+                    .broadcastMessage("Output Disc to Output Hopper " + j.getBlock().getPlaying().toString());
+            j.getOutputHopperInventory().addItem(new ItemStack(j.getBlock().getPlaying()));
+            j.getBlock().setRecord(new ItemStack(Material.AIR));
+            j.getBlock().update();
         }
-        playNext();
+        
+            playNext();
     }
     
     // Runs when a player cancles the playing of a disc manuely
     @Override
     public void cancel() {
         WPCraft.server.broadcastMessage("Duration task cancled");
-        jukeboxw.setPlaying(false);
+        j.setPlaying(false);
         super.cancel();
         
         // Schedule next disc to play after disc is ejected in next tick
@@ -62,10 +51,10 @@ public class DiscDuration extends BukkitRunnable {
 
     // If a disc is waiting in the input hopper, play it next
     public void playNext() {
-        int waitingDiscIndex = jukeboxw.getWaitingDisc();
+        int waitingDiscIndex = j.getWaitingDisc();
         if (waitingDiscIndex != -1) {
             WPCraft.server.broadcastMessage("Jukebox has a waiting disk at: " + waitingDiscIndex);
-            jukeboxw.playRecord(jukeboxw.popInputHopperAtIndex(waitingDiscIndex), plugin);
+            j.playRecord(j.popInputHopperAtIndex(waitingDiscIndex), plugin);
         }
     }
 }

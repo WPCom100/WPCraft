@@ -14,7 +14,9 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.block.BlockState;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -32,16 +34,51 @@ public class BedrockJukebox implements Listener {
         // Checks if the item moved to an input hopper on a registred Jukebox
         for (JukeboxWrapper j : WPCraft.jb.getJukeboxes()) {
             if (!event.getDestination().equals(j.getInputHopperInventory()))
-                return;
+                continue;
 
             // If the item is a record and the Jukebox is not playing a disc
             if ((event.getItem().getType().isRecord()) && (!j.isPlaying())) {
                 // Pop the record and play it
                 j.playRecord(event.getItem(), wpcraft);
                 event.setItem(new ItemStack(Material.AIR));
+                return;
             }
         } // TODO CHECK FOR LOCKED HOPPER
 
+    }
+
+    // Handles players dropping discs into input hoppers manually
+    @EventHandler
+    public void onInventoryTransfer(InventoryClickEvent event) {
+        for (JukeboxWrapper j : WPCraft.jb.getJukeboxes()) {
+            if (j.isPlaying())
+                continue;
+            if (event.getClickedInventory().equals(j.getInputHopperInventory())) {
+                if (!event.getCursor().getType().isRecord())
+                    continue;
+                j.playRecord(j.popWaitingDisc(), wpcraft);
+                return;
+            } else {
+                // Handles shift click inventory moves
+                if (!event.isShiftClick())
+                    return;
+                    // NOTE: Could use this method of checking in previous check
+                if (!event.getWhoClicked().getOpenInventory().getTopInventory().equals(j.getInputHopperInventory()))
+                    continue;
+
+                if (event.getCurrentItem().getType().isRecord()) {
+                    // Schedule disc to play after it is transfered
+                    BukkitRunnable playTask = new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            j.playRecord(j.popWaitingDisc(), wpcraft);
+                        }
+                    };
+                    playTask.runTask(wpcraft);
+                    return;
+                }
+            }
+        }
     }
 
     @EventHandler
@@ -65,11 +102,13 @@ public class BedrockJukebox implements Listener {
                 if (JBUtil.isHopperFacing(j, event.getBlock())) {
                     // Set input Hopper
                     j.setInputHopperBlock(event.getBlock());
+                    return;
 
                     // Check if the hopper is under the Jukebox, meaning output hopper
                 } else if (JBUtil.isHopperUnder(j, event.getBlock())) {
                     // Set output Hopper
                     j.setOutputHopperBlock(event.getBlock());
+                    return;
                 }
             }
         }
@@ -98,13 +137,13 @@ public class BedrockJukebox implements Listener {
                 if (j.hasInputHopper()) {
                     if (event.getBlock().getLocation().equals(j.getInputHopperBlock().getLocation())) {
                         j.removeInputHopper();
-                        break;
+                        return;
                     }
                 }
                 if (j.hasOutputHopper()) {
                     if (event.getBlock().getLocation().equals(j.getOutputHopperBlock().getLocation())) {
                         j.removeOutputHopper();
-                        break;
+                        return;
                     }
                 }
             }
@@ -131,8 +170,7 @@ public class BedrockJukebox implements Listener {
             if (bs instanceof Jukebox) {
                 // If Jukebox is already registred, ignore
                 if (WPCraft.jb.jukeboxExist(bs))
-                    return;
-
+                    break;
                 // If Jukebox was not registred, register it    
                 else
                     WPCraft.jb.addJukebox((Jukebox) bs);
@@ -155,8 +193,8 @@ public class BedrockJukebox implements Listener {
             if (j.getLocation().equals(event.getClickedBlock().getLocation())) {
                 if (j.isPlaying()) {
                     j.durationTask.cancel();
+                    return;
                 }
-                break;
             }
         }
 

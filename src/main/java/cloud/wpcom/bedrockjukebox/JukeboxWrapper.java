@@ -15,7 +15,7 @@ public class JukeboxWrapper {
 
     private Jukebox jukebox;
     private Location location;
-    private boolean hasInputHopper = false;
+    private boolean hasInputHopper = false; // TODO Multi hopper support
     private boolean hasOutputHopper = false;
     private Block inputHopper;
     private Block outputHopper;
@@ -47,6 +47,7 @@ public class JukeboxWrapper {
     public void setInputHopperBlock(Block inputHopper) {
         this.inputHopper = inputHopper;
         hasInputHopper = true;
+        WPCraft.server.broadcastMessage("Input hopper added " + getLocation());
     }
 
     public Block getInputHopperBlock() {
@@ -75,6 +76,7 @@ public class JukeboxWrapper {
 
     public void removeInputHopper() {
         hasInputHopper = false;
+        WPCraft.server.broadcastMessage("Input hopper removed " + getLocation());
     }
 
     public boolean hasOutputHopper() {
@@ -84,6 +86,7 @@ public class JukeboxWrapper {
     public void setOutputHopperBlock(Block outputHopper) {
         this.outputHopper = outputHopper;
         hasOutputHopper = true;
+        WPCraft.server.broadcastMessage("Output hopper added " + getLocation());
     }
 
     public Block getOutputHopperBlock() {
@@ -100,6 +103,7 @@ public class JukeboxWrapper {
 
     public void removeOutputHopper() {
         hasOutputHopper = false;
+        WPCraft.server.broadcastMessage("Output hopper removed " + getLocation());
     }
 
     public void setPlaying(boolean isPlaying) {
@@ -141,7 +145,7 @@ public class JukeboxWrapper {
 
     // Gets the location of the first disc, and returns it as an ItemStack
     // Returns AIR if no disc is found
-    public ItemStack popWaitingDisc() {
+    public ItemStack popWaitingDisc() { // TODO Have two similar functions that do the same thing, popInputHopperAtIndex()
         int discIndex = getWaitingDisc();
         ItemStack waitingDisc = new ItemStack(Material.AIR);
         if (discIndex == -1)
