@@ -35,10 +35,6 @@ public class JukeboxWrapper {
     public Location getLocation() {
         return location;
     }
-
-    public void setLocation(Location location) {
-        this.location = location;
-    }
     
     public boolean hasInputHopper() {
         return hasInputHopper;
@@ -63,7 +59,7 @@ public class JukeboxWrapper {
     }
 
     // Returns AIR if no disc is found
-    public ItemStack popInputHopperAtIndex(int index) {
+    public ItemStack popInputHopperAtIndex(int index) { //TODO TRANSFER TO UTIL
         ItemStack waitingDisc = new ItemStack(Material.AIR);
         if (index == -1)
             return waitingDisc;
@@ -107,11 +103,15 @@ public class JukeboxWrapper {
     }
 
     public void setPlaying(boolean isPlaying) {
-        this.isPlaying = isPlaying;
+            this.isPlaying = isPlaying;
     }
 
     public boolean isPlaying() {
         return isPlaying;
+    }
+
+    public void clearPlaying() {
+        jukebox.setRecord(new ItemStack(Material.AIR));
     }
 
     // Play the given record, creating a task to continue when the record is finished
@@ -139,7 +139,7 @@ public class JukeboxWrapper {
 
     // Gets the location of the first disc, and returns it as an ItemStack
     // Returns AIR if no disc is found
-    public ItemStack popWaitingDisc() { // TODO Have two similar functions that do the same thing, popInputHopperAtIndex()
+    public ItemStack popWaitingDisc() { // TODO Have two similar functions that do the same thing, popInputHopperAtIndex(), combo using args
         int discIndex = getWaitingDisc();
         ItemStack waitingDisc = new ItemStack(Material.AIR);
         if (discIndex == -1)
@@ -149,5 +149,10 @@ public class JukeboxWrapper {
             getInputHopperInventory().clear(discIndex);
             return waitingDisc;
         }
+    }
+
+    public String toString() {
+        return location.toString() + "\nInput Hopper: " + hasInputHopper + " : " + inputHopper.toString()
+                + "\nOutput Hopper: " + hasOutputHopper + " : " + outputHopper.toString() + "\nPlaying: " + isPlaying;
     }
 }

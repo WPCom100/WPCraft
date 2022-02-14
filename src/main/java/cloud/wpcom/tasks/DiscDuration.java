@@ -1,6 +1,5 @@
 package cloud.wpcom.tasks;
 
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import cloud.wpcom.WPCraft;
@@ -12,6 +11,7 @@ public class DiscDuration extends BukkitRunnable {
     JukeboxWrapper j;
 
     public DiscDuration(JukeboxWrapper j, WPCraft plugin) {
+        WPCraft.server.broadcastMessage("Duration task created: " + j.toString());
         this.plugin = plugin;
         this.j = j;
     }
@@ -19,17 +19,25 @@ public class DiscDuration extends BukkitRunnable {
     // Runs at the supposed end of the playing disc
     @Override
     public void run() { //TODO HANDLE IF HOPPER IS FULL
-        // If the Jukebox has an output hopper, place the current playing disc into it
-        if (j.hasOutputHopper()) {
-            WPCraft.server
-                    .broadcastMessage("Output Disc to Output Hopper " + j.getBlock().getPlaying());
-            // TODO WAS WORKING HERE, HANDLE FULL OUTPUT HOPPER. LEARNED THAT IF Hopper is not full returns empty ItemStack[], otherwise returns items that did not fit.
-            j.getOutputHopperInventory().addItem(new ItemStack(j.getBlock().getPlaying()));
-            j.getBlock().setRecord(new ItemStack(Material.AIR));
-            j.getBlock().update();
+        j.setPlaying(false);
+        j.durationTask = null;
+
+        // Check for output hopper
+        if (!j.hasOutputHopper())
+            return; //TODO WAS WORKING HERE, TROUBLESHOOTING OUTPUT HOPPER DUPPING AND AUTO PLAYING NEXT DISC AND HOPPER FULL STUFF
+
+        // Check if output hopper is full
+        if (j.getOutputHopperInventory().addItem(new ItemStack(j.getBlock().getPlaying())).size() == 1) {
+            WPCraft.server.broadcastMessage("Output Hopper full");
+            return;
         }
+        WPCraft.server.broadcastMessage("Output Disc to Output Hopper " + j.getBlock().getPlaying());
+        j.clearPlaying();
+        j.getBlock().update();
+
+        // Check for input hopper and play the next disc
         if (j.hasInputHopper())
-            playNext();
+            playNext(j, plugin);
     }
     
     // Runs when a player cancles the playing of a disc manuely
@@ -37,22 +45,21 @@ public class DiscDuration extends BukkitRunnable {
     public void cancel() {
         WPCraft.server.broadcastMessage("Duration task cancled");
         j.setPlaying(false);
-        super.cancel();
-        
+        j.clearPlaying();
         // Schedule next disc to play after disc is ejected in next tick
-        BukkitRunnable playTask = new BukkitRunnable() {
+        new BukkitRunnable() {
             @Override
             public void run() {
                 if (j.hasInputHopper())
-                    playNext();
+                    playNext(j, plugin);
             }
-        };
-        playTask.runTask(plugin);
+        }.runTask(plugin);
 
+        super.cancel();
     }
 
-    // If a disc is waiting in the input hopper, play it next
-    public void playNext() {
+    // If a disc is waiting in the input hopper, play it next // TODO MOVE TO UTIL
+    public static void playNext( JukeboxWrapper j, WPCraft plugin) {
         int waitingDiscIndex = j.getWaitingDisc();
         if (waitingDiscIndex != -1) {
             WPCraft.server.broadcastMessage("Jukebox has a waiting disk at: " + waitingDiscIndex);
