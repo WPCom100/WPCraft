@@ -3,6 +3,7 @@ package cloud.wpcom.tasks;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import cloud.wpcom.WPCraft;
+import cloud.wpcom.bedrockjukebox.JBUtil;
 import cloud.wpcom.bedrockjukebox.JukeboxWrapper;
 
 public class DiscDuration extends BukkitRunnable {
@@ -18,13 +19,13 @@ public class DiscDuration extends BukkitRunnable {
     
     // Runs at the supposed end of the playing disc
     @Override
-    public void run() { //TODO HANDLE IF HOPPER IS FULL
+    public void run() {
         j.setPlaying(false);
         j.durationTask = null;
 
         // Check for output hopper
         if (!j.hasOutputHopper())
-            return; //TODO WAS WORKING HERE, TROUBLESHOOTING OUTPUT HOPPER DUPPING AND AUTO PLAYING NEXT DISC AND HOPPER FULL STUFF
+            return;
 
         // Check if output hopper is full
         if (j.getOutputHopperInventory().addItem(new ItemStack(j.getBlock().getPlaying())).size() == 1) {
@@ -37,7 +38,7 @@ public class DiscDuration extends BukkitRunnable {
 
         // Check for input hopper and play the next disc
         if (j.hasInputHopper())
-            playNext(j, plugin);
+            JBUtil.playNext(j, plugin);
     }
     
     // Runs when a player cancles the playing of a disc manuely
@@ -51,19 +52,10 @@ public class DiscDuration extends BukkitRunnable {
             @Override
             public void run() {
                 if (j.hasInputHopper())
-                    playNext(j, plugin);
+                    JBUtil.playNext(j, plugin);
             }
         }.runTask(plugin);
 
         super.cancel();
-    }
-
-    // If a disc is waiting in the input hopper, play it next // TODO MOVE TO UTIL
-    public static void playNext( JukeboxWrapper j, WPCraft plugin) {
-        int waitingDiscIndex = j.getWaitingDisc();
-        if (waitingDiscIndex != -1) {
-            WPCraft.server.broadcastMessage("Jukebox has a waiting disk at: " + waitingDiscIndex);
-            j.playRecord(j.popInputHopperAtIndex(waitingDiscIndex), plugin);
-        }
     }
 }

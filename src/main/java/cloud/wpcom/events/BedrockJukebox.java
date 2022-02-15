@@ -3,7 +3,6 @@ package cloud.wpcom.events;
 import cloud.wpcom.WPCraft;
 import cloud.wpcom.bedrockjukebox.JBUtil;
 import cloud.wpcom.bedrockjukebox.JukeboxWrapper;
-import cloud.wpcom.tasks.DiscDuration;
 
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -24,7 +23,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class BedrockJukebox implements Listener {
-    // TODO Handle static server calls in listners
+    // TODO Handle static server calls in listeners
     private final WPCraft wpcraft;
 
     public BedrockJukebox(WPCraft wpcraft) {
@@ -33,19 +32,24 @@ public class BedrockJukebox implements Listener {
 
     @EventHandler
     public void hopperListener(InventoryMoveItemEvent event) {
-
-        // Checks if the item moved to an input hopper on a registred Jukebox
+        if ((!event.getItem().getType().isRecord()))
+            return;
+        
+        // Check if the disc moved to an input hopper on a registred Jukebox
         for (JukeboxWrapper j : WPCraft.jb.getJukeboxes()) {
             if (!event.getDestination().equals(j.getInputHopperInventory()))
                 continue;
-
-            // If the item is a record and the Jukebox is not playing a disc
-            if ((event.getItem().getType().isRecord()) && (!j.isPlaying())) {
-                // 'Delete' the record and play it
-                j.playRecord(event.getItem(), wpcraft);
-                event.setItem(new ItemStack(Material.AIR));
+            // Check for overloading a jukebox
+            if (j.getBlock().getRecord().getType() != Material.AIR)
                 return;
-            }
+            // Schedule task to play disc next tick
+            new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            j.playRecord(j.popWaitingDisc(), wpcraft);
+                        }
+                    }.runTask(wpcraft); 
+
         } // TODO CHECK FOR LOCKED HOPPER
 
     }
@@ -61,8 +65,13 @@ public class BedrockJukebox implements Listener {
             if (j.isPlaying())
                 continue;
 
-            // Checks if the jukebox had a disc waiting to dispense to a full ouput hopper
+            // Checks if the interaction was with an output hopper to handle full ouput
+            // hoppers at the end of Disc Duration cycle.
             if (outputHopperCheck(event, j))
+                return;
+            
+            // Check for overloading a jukebox
+            if (j.getBlock().getPlaying() != Material.AIR)
                 return;
 
             if (event.getClickedInventory().equals(j.getInputHopperInventory())) {
@@ -97,32 +106,29 @@ public class BedrockJukebox implements Listener {
     // Handles players pulling discs from full ouput hoppers that have a disc waiting in the jukebox
     public boolean outputHopperCheck(InventoryClickEvent event, JukeboxWrapper j) {
         if (event.getClickedInventory().equals(j.getOutputHopperInventory())) {
-            if (j.getBlock().getPlaying() != Material.AIR) {
-                // Schedule output hopper to be checked next tick
-                new BukkitRunnable() { //TODO MAke into function. used twice again below
-                    @Override
-                    public void run() {
-                        // If the output hopper is still full
-                        if (j.getOutputHopperInventory().addItem(new ItemStack(j.getBlock().getPlaying())).size() == 1)
-                            return;
-                        
-                        j.clearPlaying();
-                    }
-                }.runTask(wpcraft);
-            }
+            if (j.getBlock().getPlaying() != Material.AIR)
+                checkHopperNextTick(j);
+
             return true;
 
         } else { // Handles shift click inventory moves
 
             if (!event.isShiftClick())
                 return false;
-            // NOTE: Could use this method of checking in previous check?
             if (!event.getWhoClicked().getOpenInventory().getTopInventory().equals(j.getOutputHopperInventory()))
                 return false;
 
-            if (j.getBlock().getPlaying() != Material.AIR) {
-                // Schedule output hopper to be checked next tick
-                new BukkitRunnable() {
+            if (j.getBlock().getPlaying() != Material.AIR)
+                checkHopperNextTick(j);
+
+            return true;
+
+        }
+    }
+    // Used by functions that handle full output hoppers
+    // Schedules output hopper to be checked next tick
+    public void checkHopperNextTick(JukeboxWrapper j) {
+        new BukkitRunnable() {
                     @Override
                     public void run() {
                         // If the output hopper is still full
@@ -131,13 +137,9 @@ public class BedrockJukebox implements Listener {
                         
                         j.clearPlaying();
                         if (j.hasInputHopper())
-                            DiscDuration.playNext(j, wpcraft);
+                            JBUtil.playNext(j, wpcraft);
                     }
                 }.runTask(wpcraft);
-            }
-            return true;
-            
-        }
     }
 
     @EventHandler
@@ -181,7 +183,7 @@ public class BedrockJukebox implements Listener {
             // Remove from jukebox db
             WPCraft.jb.removeJukebox((Jukebox) event.getBlock().getState());
 
-            // Check if the block broken is a Hopper
+        // Check if the block broken is a Hopper
         } else if (event.getBlock().getType() == Material.HOPPER) {
 
             // If the hopper was a registered hopper, remove it.

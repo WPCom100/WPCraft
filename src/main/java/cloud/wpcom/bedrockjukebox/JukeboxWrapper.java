@@ -58,18 +58,6 @@ public class JukeboxWrapper {
         return ((org.bukkit.block.Hopper) getInputHopperBlock().getState()).getInventory();
     }
 
-    // Returns AIR if no disc is found
-    public ItemStack popInputHopperAtIndex(int index) { //TODO TRANSFER TO UTIL
-        ItemStack waitingDisc = new ItemStack(Material.AIR);
-        if (index == -1)
-            return waitingDisc;
-        else {
-            waitingDisc = getInputHopperInventory().getItem(index).clone();
-            getInputHopperInventory().clear(index);
-            return waitingDisc;
-        }
-    }
-
     public void removeInputHopper() {
         hasInputHopper = false;
         WPCraft.server.broadcastMessage("Input hopper removed ");

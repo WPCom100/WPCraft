@@ -101,6 +101,7 @@ public class JBUtil {
             }
         }
     }
+
     // Checks if a output hopper is below a jukebox and registers it
     public static void registerOutputHopper(JukeboxWrapper j) {
         Block blockToCheck = j.getLocation().getBlock().getRelative(BlockFace.DOWN);
@@ -109,6 +110,28 @@ public class JBUtil {
                 WPCraft.server.broadcastMessage("Output hopper found below");
                 j.setOutputHopperBlock(blockToCheck);
             }
+        }
+    }
+
+    // Returns item at a location in a hopper, removing it. AKA Popping
+    // Returns AIR if no disc is found
+    public static ItemStack popHopperAtIndex(int index, JukeboxWrapper j) {
+        ItemStack waitingDisc = new ItemStack(Material.AIR);
+        if (index == -1)
+            return waitingDisc;
+        else {
+            waitingDisc = j.getInputHopperInventory().getItem(index).clone();
+            j.getInputHopperInventory().clear(index);
+            return waitingDisc;
+        }
+    }
+
+    // If a disc is waiting in the input hopper, play it next
+    public static void playNext(JukeboxWrapper j, WPCraft plugin) {
+        int discIndex = j.getWaitingDisc();
+        if (discIndex != -1) {
+            WPCraft.server.broadcastMessage("Jukebox has a waiting disk at: " + discIndex);
+            j.playRecord(JBUtil.popHopperAtIndex(discIndex, j), plugin);
         }
     }
 }
