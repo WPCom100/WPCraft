@@ -20,11 +20,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.block.BlockState;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class BedrockJukebox implements Listener {
     // TODO Handle static server calls in listners
-
     private final WPCraft wpcraft;
 
     public BedrockJukebox(WPCraft wpcraft) {
@@ -52,7 +52,10 @@ public class BedrockJukebox implements Listener {
 
     // Handles players transfering discs into input hoppers manually
     @EventHandler
-    public void inputHopperCheck(InventoryClickEvent event) { // TODO Test shift hold moves
+    public void inputHopperCheck(InventoryClickEvent event) { // TODO SHIFT HOLD MOVES BREAK THE MOD
+        // Ignores clicks outside of the gui
+        if (event.getSlotType() == InventoryType.SlotType.OUTSIDE)
+            return;
         for (JukeboxWrapper j : WPCraft.jb.getJukeboxes()) {
             // Discs should not be played by jukeboxes with active music
             if (j.isPlaying())
@@ -143,7 +146,7 @@ public class BedrockJukebox implements Listener {
         // Check if the block placed is a Jukebox
         if (event.getBlock().getType() == Material.JUKEBOX) {
             // Add to jukebox db
-            WPCraft.jb.addJukebox((Jukebox) event.getBlock().getState());
+            WPCraft.jb.addJukebox((Jukebox) event.getBlock().getState(), wpcraft);
 
             // Check if the block placed is a Hopper
         } else if (event.getBlock().getType() == Material.HOPPER) {
@@ -229,7 +232,7 @@ public class BedrockJukebox implements Listener {
                     break;
                 // If Jukebox was not registred, register it    
                 else
-                    WPCraft.jb.addJukebox((Jukebox) bs);
+                    WPCraft.jb.addJukebox((Jukebox) bs, wpcraft);
             }
         }
     }
@@ -248,8 +251,14 @@ public class BedrockJukebox implements Listener {
         for (JukeboxWrapper j : WPCraft.jb.getJukeboxes()) {
             if (!j.getLocation().equals(event.getClickedBlock().getLocation()))
                 continue;
-            if (!j.isPlaying())
-                return;
+            if (!j.isPlaying()) {
+                // Full output hopper check
+                if (j.getBlock().getRecord().getType() != Material.AIR) {
+                    j.clearPlaying();
+                    return;
+                } else
+                    return;
+            }
             j.durationTask.cancel();
             return;
         }

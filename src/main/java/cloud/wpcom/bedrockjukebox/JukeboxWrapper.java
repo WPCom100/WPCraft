@@ -116,6 +116,8 @@ public class JukeboxWrapper {
 
     // Play the given record, creating a task to continue when the record is finished
     public void playRecord(ItemStack record, WPCraft wpcraft) {
+        if (record.getType() == Material.AIR)
+            return;
         jukebox.setRecord(record);
         WPCraft.server.broadcastMessage("Playing Disk:" + record.toString());
         if (jukebox.update())
