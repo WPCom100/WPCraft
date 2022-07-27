@@ -12,7 +12,7 @@ public class DiscDuration extends BukkitRunnable {
     JukeboxWrapper j;
 
     public DiscDuration(JukeboxWrapper j, WPCraft plugin) {
-        WPCraft.server.broadcastMessage("Duration task created: " + j.toString());
+        WPCraft.server.broadcastMessage("Duration task created");
         this.plugin = plugin;
         this.j = j;
     }

@@ -140,9 +140,4 @@ public class JukeboxWrapper {
             return waitingDisc;
         }
     }
-
-    public String toString() {
-        return location.toString() + "\nInput Hopper: " + hasInputHopper + " : " + inputHopper.toString()
-                + "\nOutput Hopper: " + hasOutputHopper + " : " + outputHopper.toString() + "\nPlaying: " + isPlaying;
-    }
 }

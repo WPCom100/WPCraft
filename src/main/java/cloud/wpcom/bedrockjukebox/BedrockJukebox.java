@@ -13,23 +13,29 @@ public class BedrockJukebox {
     private ArrayList<JukeboxWrapper> jukeboxes = new ArrayList<JukeboxWrapper>(0);
 
     public void addJukebox(Jukebox jb, WPCraft plugin) {
-        JukeboxWrapper j = new JukeboxWrapper(jb);
-        jukeboxes.add(j);
-        JBUtil.registerInputHoppers(j);
-        JBUtil.registerOutputHopper(j);
+        JukeboxWrapper jbw = new JukeboxWrapper(jb);
+        jukeboxes.add(jbw);
+        JBUtil.registerInputHoppers(jbw);
+        JBUtil.registerOutputHopper(jbw);
         // Plays disc from input hopper on next tick
-        if (j.hasInputHopper()) {
+        if (jbw.hasInputHopper()) {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    j.playRecord(j.popWaitingDisc(), plugin);
+                    jbw.playRecord(jbw.popWaitingDisc(), plugin);
                 }
             }.runTask(plugin);
         }
     }
 
     public void removeJukebox(Jukebox jb) {
-        jukeboxes.remove(getJukeboxAt(jb.getLocation()));
+        // Get the jukebox wrapper for the appropriate jukebox
+        JukeboxWrapper jbw = getJukeboxAt(jb.getLocation());
+
+        // Stop any running tasks before removing it
+        if (jbw.durationTask != null)
+            jbw.durationTask.cancel();
+        jukeboxes.remove(jbw);
         WPCraft.server.broadcastMessage("Registered jukebox removed!");
     }
 

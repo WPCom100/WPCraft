@@ -60,6 +60,13 @@ public class BedrockJukebox implements Listener {
         // Ignores clicks outside of the gui
         if (event.getSlotType() == InventoryType.SlotType.OUTSIDE)
             return;
+
+        // Check if the shift click/click was with a record
+        if ((!event.getCurrentItem().getType().isRecord()) && (!event.getCursor().getType().isRecord())) {
+            WPCraft.server.broadcastMessage("not detected");
+            return;
+        }
+
         for (JukeboxWrapper j : WPCraft.jb.getJukeboxes()) {
             // Discs should not be played by jukeboxes with active music
             if (j.isPlaying())
@@ -74,10 +81,14 @@ public class BedrockJukebox implements Listener {
             if (j.getBlock().getPlaying() != Material.AIR)
                 return;
 
-            if (event.getClickedInventory().equals(j.getInputHopperInventory())) {
-                if (!event.getCursor().getType().isRecord())
-                    continue;
-                j.playRecord(j.popWaitingDisc(), wpcraft);
+            // Schedule to play next tick
+            if (event.getClickedInventory().equals(j.getInputHopperInventory())) { 
+                new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            j.playRecord(j.popWaitingDisc(), wpcraft);
+                        }
+                    }.runTask(wpcraft); 
                 return;
 
             } else { // Handles shift click inventory moves
@@ -105,6 +116,10 @@ public class BedrockJukebox implements Listener {
 
     // Handles players pulling discs from full ouput hoppers that have a disc waiting in the jukebox
     public boolean outputHopperCheck(InventoryClickEvent event, JukeboxWrapper j) {
+        if (!j.hasOutputHopper()) { // Checks for jukeboxs without output hoppers
+            return false;
+        }
+
         if (event.getClickedInventory().equals(j.getOutputHopperInventory())) {
             if (j.getBlock().getPlaying() != Material.AIR)
                 checkHopperNextTick(j);

@@ -2,7 +2,7 @@ name: WPCraft
 version: "0.1"
 main: cloud.wpcom.WPCraft
 author: "WPCom"
-api-version: 1.18
+api-version: 1.19
 load: STARTUP
 commands:
   bc:
