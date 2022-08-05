@@ -5,6 +5,7 @@
 
 # Workspaces
 *.code-workspace
+/.vscode
 
 # Source compilations
 /target
