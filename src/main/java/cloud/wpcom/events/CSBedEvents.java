@@ -9,15 +9,18 @@ import org.bukkit.event.player.PlayerBedLeaveEvent;
 import cloud.wpcom.WPCraft;
 import cloud.wpcom.commandsleeper.CSUtil;
 import cloud.wpcom.commandsleeper.CommandSleeper;
+import cloud.wpcom.tasks.CSNightWatcherTask;
 
-public class CommandSleeperEvents implements Listener {
+public class CSBedEvents implements Listener {
 
     private final WPCraft wpcraft;
     private final CommandSleeper commandSleeper;
+    private final CSNightWatcherTask nightSkipper;
 
-    public CommandSleeperEvents(WPCraft wpcraft, CommandSleeper commandSleeper) {
+    public CSBedEvents(WPCraft wpcraft, CommandSleeper commandSleeper) {
         this.wpcraft = wpcraft;
         this.commandSleeper = commandSleeper;
+        this.nightSkipper = new CSNightWatcherTask(this.commandSleeper);
     }
  
     @EventHandler
@@ -34,7 +37,9 @@ public class CommandSleeperEvents implements Listener {
                                 .replace("[sleeping]", CSUtil.getNumberSleeping(event.getPlayer().getWorld(), commandSleeper).toString())
                                 .replace("[needed]", CSUtil.getNeededToSleep(event.getPlayer().getWorld()).toString())));
 
-        // If night skipper isnt running, start it
+        if (!nightSkipper.isSkipping()) {
+            nightSkipper.setWorld(event.getPlayer().getWorld());
+        }
     }
 
     @EventHandler

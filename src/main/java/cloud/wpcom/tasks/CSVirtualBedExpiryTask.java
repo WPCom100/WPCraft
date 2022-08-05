@@ -8,13 +8,13 @@ import cloud.wpcom.WPCraft;
 import cloud.wpcom.commandsleeper.CSUtil;
 import cloud.wpcom.commandsleeper.CommandSleeper;
 
-public class CSVirtualBedTask extends BukkitRunnable {
+public class CSVirtualBedExpiryTask extends BukkitRunnable {
 
     public final Player player;
     public final WPCraft wpcraft;
     public final CommandSleeper commandSleeper;
 
-    public CSVirtualBedTask(WPCraft wpcraft, CommandSleeper commandSleeper, Player player) {
+    public CSVirtualBedExpiryTask(WPCraft wpcraft, CommandSleeper commandSleeper, Player player) {
         this.wpcraft = wpcraft;
         this.player = player;
         this.commandSleeper = commandSleeper;

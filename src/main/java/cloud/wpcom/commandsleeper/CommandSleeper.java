@@ -9,11 +9,11 @@ import javax.annotation.Nonnull;
 
 import org.bukkit.entity.Player;
 
-import cloud.wpcom.tasks.CSVirtualBedTask;
+import cloud.wpcom.tasks.CSVirtualBedExpiryTask;
 
 public class CommandSleeper {
     
-    private Map<Player, CSVirtualBedTask> commandSleepers;
+    private Map<Player, CSVirtualBedExpiryTask> commandSleepers;
 
     public CommandSleeper() {
         this.commandSleepers = new HashMap<>();
@@ -24,7 +24,7 @@ public class CommandSleeper {
      *
      * @param player The player for which to add to the list of sleeping players.
      */
-    public void addCommandSleeper(@Nonnull Player player, @Nonnull CSVirtualBedTask expiryTask) {
+    public void addCommandSleeper(@Nonnull Player player, @Nonnull CSVirtualBedExpiryTask expiryTask) {
         commandSleepers.put(player, expiryTask);
     }
 
@@ -47,6 +47,8 @@ public class CommandSleeper {
 
     /**
      * Remove all players from list of sleeping players forcefully (displays a message)
+     * 
+     * @param player The player causing players to be forcefully removed
      */
     public void forcefullyClearCommandSleepers(Player player) {
         commandSleepers.values().forEach(expiryTask -> expiryTask.cancelByPlayer(player));

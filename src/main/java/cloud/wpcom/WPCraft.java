@@ -36,8 +36,8 @@ public class WPCraft extends JavaPlugin {
 
         // Load CommandSleeper
         CommandSleeper commandSleeper = new CommandSleeper();
-        getServer().getPluginManager().registerEvents(new CommandSleeperEvents(this, commandSleeper), this);
-        getCommand("sleep").setExecutor(new CommandSleeperCommands(this, commandSleeper));
+        getServer().getPluginManager().registerEvents(new CSBedEvents(this, commandSleeper), this);
+        getCommand("sleep").setExecutor(new CSSleepCommad(this, commandSleeper));
         
 
     }

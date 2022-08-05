@@ -14,14 +14,14 @@ import org.bukkit.entity.Player;
 import cloud.wpcom.WPCraft;
 import cloud.wpcom.commandsleeper.CSUtil;
 import cloud.wpcom.commandsleeper.CommandSleeper;
-import cloud.wpcom.tasks.CSVirtualBedTask;
+import cloud.wpcom.tasks.CSVirtualBedExpiryTask;
 
-public class CommandSleeperCommands implements TabExecutor {
+public class CSSleepCommad implements TabExecutor {
 
     private final WPCraft wpcraft;
     private final CommandSleeper commandSleeper;
     
-    public CommandSleeperCommands(@Nonnull WPCraft wpcraft, @Nonnull CommandSleeper commandSleeper) {
+    public CSSleepCommad(@Nonnull WPCraft wpcraft, @Nonnull CommandSleeper commandSleeper) {
         this.wpcraft = wpcraft;
         this.commandSleeper = commandSleeper;
     }
@@ -51,7 +51,7 @@ public class CommandSleeperCommands implements TabExecutor {
         }
         
         // Add to the list of sleeping players
-        commandSleeper.addCommandSleeper(playerSender, new CSVirtualBedTask(wpcraft, commandSleeper, playerSender));
+        commandSleeper.addCommandSleeper(playerSender, new CSVirtualBedExpiryTask(wpcraft, commandSleeper, playerSender));
 
         // Send chat message
         wpcraft.getServer()
