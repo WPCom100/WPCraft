@@ -10,7 +10,7 @@ import cloud.wpcom.WPCraft;
 import org.bukkit.ChatColor;
 
 
-public class ServerBroadcast implements CommandExecutor {
+public class ServerBroadcastCommands implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] mssg) {

@@ -9,7 +9,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import cloud.wpcom.WPCraft;
-import cloud.wpcom.tasks.DiscDuration;
+import cloud.wpcom.tasks.BJDiscDurationTask;
 
 public class JukeboxWrapper {
 
@@ -20,7 +20,7 @@ public class JukeboxWrapper {
     private Block inputHopper;
     private Block outputHopper;
     private boolean isPlaying = false;
-    public DiscDuration durationTask;
+    public BJDiscDurationTask durationTask;
     
     public JukeboxWrapper(Jukebox j) {
         this.jukebox = j;
@@ -111,8 +111,8 @@ public class JukeboxWrapper {
         if (jukebox.update())
             isPlaying = true;
 
-        durationTask = new DiscDuration(this, wpcraft);
-        durationTask.runTaskLater(wpcraft, JBUtil.getDiskDuration(record));
+        durationTask = new BJDiscDurationTask(this, wpcraft);
+        durationTask.runTaskLater(wpcraft, BJUtil.getDiskDuration(record));
     }
 
     public int getWaitingDisc() {

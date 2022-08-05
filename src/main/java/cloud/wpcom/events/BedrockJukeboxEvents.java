@@ -1,7 +1,7 @@
 package cloud.wpcom.events;
 
 import cloud.wpcom.WPCraft;
-import cloud.wpcom.bedrockjukebox.JBUtil;
+import cloud.wpcom.bedrockjukebox.BJUtil;
 import cloud.wpcom.bedrockjukebox.JukeboxWrapper;
 
 import org.bukkit.Chunk;
@@ -22,11 +22,11 @@ import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-public class BedrockJukebox implements Listener {
-    // TODO Handle static server calls in listeners
+public class BedrockJukeboxEvents implements Listener {
+
     private final WPCraft wpcraft;
 
-    public BedrockJukebox(WPCraft wpcraft) {
+    public BedrockJukeboxEvents(WPCraft wpcraft) {
         this.wpcraft = wpcraft;
     }
 
@@ -152,7 +152,7 @@ public class BedrockJukebox implements Listener {
                         
                         j.clearPlaying();
                         if (j.hasInputHopper())
-                            JBUtil.playNext(j, wpcraft);
+                            BJUtil.playNext(j, wpcraft);
                     }
                 }.runTask(wpcraft);
     }
@@ -175,13 +175,13 @@ public class BedrockJukebox implements Listener {
                 }
 
                 // If the hopper is facing the registered Jukebox
-                if (JBUtil.isHopperFacing(j, event.getBlock())) {
+                if (BJUtil.isHopperFacing(j, event.getBlock())) {
                     // Set input Hopper
                     j.setInputHopperBlock(event.getBlock());
                     return;
 
                     // Check if the hopper is under the Jukebox, meaning output hopper
-                } else if (JBUtil.isHopperUnder(j, event.getBlock())) {
+                } else if (BJUtil.isHopperUnder(j, event.getBlock())) {
                     // Set output Hopper
                     j.setOutputHopperBlock(event.getBlock());
                     return;

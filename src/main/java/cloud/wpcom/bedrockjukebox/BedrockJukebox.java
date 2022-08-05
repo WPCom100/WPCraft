@@ -15,8 +15,8 @@ public class BedrockJukebox {
     public void addJukebox(Jukebox jb, WPCraft plugin) {
         JukeboxWrapper jbw = new JukeboxWrapper(jb);
         jukeboxes.add(jbw);
-        JBUtil.registerInputHoppers(jbw);
-        JBUtil.registerOutputHopper(jbw);
+        BJUtil.registerInputHoppers(jbw);
+        BJUtil.registerOutputHopper(jbw);
         // Plays disc from input hopper on next tick
         if (jbw.hasInputHopper()) {
             new BukkitRunnable() {

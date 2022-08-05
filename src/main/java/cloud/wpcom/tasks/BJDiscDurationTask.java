@@ -3,15 +3,15 @@ package cloud.wpcom.tasks;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import cloud.wpcom.WPCraft;
-import cloud.wpcom.bedrockjukebox.JBUtil;
+import cloud.wpcom.bedrockjukebox.BJUtil;
 import cloud.wpcom.bedrockjukebox.JukeboxWrapper;
 
-public class DiscDuration extends BukkitRunnable {
+public class BJDiscDurationTask extends BukkitRunnable {
 
     WPCraft plugin;
     JukeboxWrapper j;
 
-    public DiscDuration(JukeboxWrapper j, WPCraft plugin) {
+    public BJDiscDurationTask(JukeboxWrapper j, WPCraft plugin) {
         WPCraft.server.broadcastMessage("Duration task created");
         this.plugin = plugin;
         this.j = j;
@@ -38,7 +38,7 @@ public class DiscDuration extends BukkitRunnable {
 
         // Check for input hopper and play the next disc
         if (j.hasInputHopper())
-            JBUtil.playNext(j, plugin);
+            BJUtil.playNext(j, plugin);
     }
     
     // Runs when a player cancles the playing of a disc manuely
@@ -52,7 +52,7 @@ public class DiscDuration extends BukkitRunnable {
             @Override
             public void run() {
                 if (j.hasInputHopper())
-                    JBUtil.playNext(j, plugin);
+                    BJUtil.playNext(j, plugin);
             }
         }.runTask(plugin);
 

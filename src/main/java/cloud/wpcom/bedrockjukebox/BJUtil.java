@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack;
 
 import cloud.wpcom.WPCraft;
 
-public class JBUtil {
+public class BJUtil {
 
     // Returns the duration of a music disk in ticks
     public static long getDiskDuration(ItemStack record) {
@@ -131,7 +131,7 @@ public class JBUtil {
         int discIndex = j.getWaitingDisc();
         if (discIndex != -1) {
             WPCraft.server.broadcastMessage("Jukebox has a waiting disk at: " + discIndex);
-            j.playRecord(JBUtil.popHopperAtIndex(discIndex, j), plugin);
+            j.playRecord(BJUtil.popHopperAtIndex(discIndex, j), plugin);
         }
     }
 }
