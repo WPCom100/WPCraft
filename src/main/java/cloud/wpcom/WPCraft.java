@@ -1,5 +1,6 @@
 package cloud.wpcom;
 
+import cloud.wpcom.amorstandarms.AmorStandArms;
 import cloud.wpcom.bedrockjukebox.BJCommand;
 import cloud.wpcom.bedrockjukebox.BJEvents;
 import cloud.wpcom.bedrockjukebox.BedrockJukebox;
@@ -44,6 +45,10 @@ public class WPCraft extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new CSBedEvents(this, commandSleeper), this);
         getCommand("sleep").setExecutor(new CSSleepCommad(this, commandSleeper));
         getLogger().info("CommandSleeper loaded!");
+
+        // Load Armor Stand Arms
+        getServer().getPluginManager().registerEvents(new AmorStandArms(this), this);
+        getLogger().info("Armor Stand Arms loaded!");
         
 
     }
