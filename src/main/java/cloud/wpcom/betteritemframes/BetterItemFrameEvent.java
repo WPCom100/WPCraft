@@ -1,4 +1,4 @@
-package cloud.wpcom.events;
+package cloud.wpcom.betteritemframes;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -8,7 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.Location;
 import org.bukkit.block.Container;
 
-public class BetterItemFrameEvents implements Listener {
+public class BetterItemFrameEvent implements Listener {
 
     // Blocks rotation of item frames unless holding an item frame in the right hand
     @EventHandler

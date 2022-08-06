@@ -1,12 +1,10 @@
-package cloud.wpcom.tasks;
+package cloud.wpcom.commandsleeper;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import cloud.wpcom.WPCraft;
-import cloud.wpcom.commandsleeper.CSUtil;
-import cloud.wpcom.commandsleeper.CommandSleeper;
 
 public class CSVirtualBedExpiryTask extends BukkitRunnable {
 

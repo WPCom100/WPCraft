@@ -1,4 +1,4 @@
-package cloud.wpcom.commands;
+package cloud.wpcom.serverbroadcast;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -10,7 +10,7 @@ import cloud.wpcom.WPCraft;
 import org.bukkit.ChatColor;
 
 
-public class ServerBroadcastCommands implements CommandExecutor {
+public class ServerBroadcastCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] mssg) {

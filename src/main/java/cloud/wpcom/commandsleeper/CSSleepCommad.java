@@ -1,4 +1,4 @@
-package cloud.wpcom.commands;
+package cloud.wpcom.commandsleeper;
 
 import java.util.List;
 
@@ -12,9 +12,6 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
 import cloud.wpcom.WPCraft;
-import cloud.wpcom.commandsleeper.CSUtil;
-import cloud.wpcom.commandsleeper.CommandSleeper;
-import cloud.wpcom.tasks.CSVirtualBedExpiryTask;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
