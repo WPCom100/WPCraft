@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 import cloud.wpcom.WPCraft;
 import cloud.wpcom.bedrockjukebox.JukeboxWrapper;
 
-public class BedrockJukeboxCommands implements CommandExecutor {
+public class BJCommands implements CommandExecutor {
     
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] mssg) {

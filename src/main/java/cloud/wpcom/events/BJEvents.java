@@ -22,11 +22,11 @@ import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-public class BedrockJukeboxEvents implements Listener {
+public class BJEvents implements Listener {
 
     private final WPCraft wpcraft;
 
-    public BedrockJukeboxEvents(WPCraft wpcraft) {
+    public BJEvents(WPCraft wpcraft) {
         this.wpcraft = wpcraft;
     }
 
