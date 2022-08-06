@@ -1,6 +1,10 @@
 package cloud.wpcom.events;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerBedEnterEvent;
@@ -15,12 +19,14 @@ public class CSBedEvents implements Listener {
 
     private final WPCraft wpcraft;
     private final CommandSleeper commandSleeper;
-    private final CSNightWatcherTask nightSkipper;
+    private Map<World, CSNightWatcherTask> watchers = new HashMap<>(); //TODO Move to own module
 
     public CSBedEvents(WPCraft wpcraft, CommandSleeper commandSleeper) {
         this.wpcraft = wpcraft;
         this.commandSleeper = commandSleeper;
-        this.nightSkipper = new CSNightWatcherTask(this.commandSleeper);
+
+        // Create a night watcher for all worlds on the server
+        wpcraft.getServer().getWorlds().forEach(world -> watchers.put(world, new CSNightWatcherTask(wpcraft, commandSleeper, world)));
     }
  
     @EventHandler
@@ -37,8 +43,9 @@ public class CSBedEvents implements Listener {
                                 .replace("[sleeping]", CSUtil.getNumberSleeping(event.getPlayer().getWorld(), commandSleeper).toString())
                                 .replace("[needed]", CSUtil.getNeededToSleep(event.getPlayer().getWorld()).toString())));
 
-        if (!nightSkipper.isSkipping()) {
-            nightSkipper.setWorld(event.getPlayer().getWorld());
+        // Check if watcher is running, if not start it for that world
+        if (!watchers.get(event.getPlayer().getWorld()).isWatching()) {
+            watchers.get(event.getPlayer().getWorld()).watch();
         }
     }
 
@@ -46,7 +53,7 @@ public class CSBedEvents implements Listener {
     public void playerLeaveBed(PlayerBedLeaveEvent event) {
         
         // Check if this was the only physical sleeper
-        if (!CSUtil.hasPhysicalSleeper(event.getPlayer())) {
+        if (!CSUtil.hasPhysicalSleeper(event.getPlayer().getWorld())) {
             // If so, send a message and forcefully remove command sleepers
             wpcraft.getServer()
                     .broadcastMessage(ChatColor.translateAlternateColorCodes('&',
@@ -54,6 +61,9 @@ public class CSBedEvents implements Listener {
                                     .replace("[player]", event.getPlayer().getName())));
 
             commandSleeper.forcefullyClearCommandSleepers(event.getPlayer());
+
+            // Stop watching the world
+            watchers.get(event.getPlayer().getWorld()).cancel();
             return;
         }
         

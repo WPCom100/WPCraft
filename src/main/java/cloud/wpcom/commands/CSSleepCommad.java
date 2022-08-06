@@ -41,7 +41,7 @@ public class CSSleepCommad implements TabExecutor {
         }
         
         // Checks to make sure someone is sleeping in a bed, send a request if not
-        if (!CSUtil.hasPhysicalSleeper(playerSender)) {
+        if (!CSUtil.hasPhysicalSleeper(playerSender.getWorld())) {
             wpcraft.getServer()
                     .broadcastMessage(ChatColor.translateAlternateColorCodes('&',
                             "&f[&bWPCraft&f] &e[player] &fwants to sleep, but needs someone to get in bed!"

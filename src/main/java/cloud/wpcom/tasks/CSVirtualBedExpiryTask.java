@@ -18,7 +18,7 @@ public class CSVirtualBedExpiryTask extends BukkitRunnable {
         this.wpcraft = wpcraft;
         this.player = player;
         this.commandSleeper = commandSleeper;
-        this.runTaskLater(this.wpcraft, 600L);
+        runTaskLater(this.wpcraft, 600L);
     }
 
     @Override

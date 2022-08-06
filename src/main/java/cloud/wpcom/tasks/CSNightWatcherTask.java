@@ -2,65 +2,54 @@ package cloud.wpcom.tasks;
 
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
+import cloud.wpcom.WPCraft;
 import cloud.wpcom.commandsleeper.CSUtil;
 import cloud.wpcom.commandsleeper.CommandSleeper;
 
 public class CSNightWatcherTask extends BukkitRunnable {
 
-    private boolean isSkipping;
-    private World world;
-    private CommandSleeper commandSleeper;
+    private final WPCraft wpcraft;
+    private final World world;
+    private final CommandSleeper commandSleeper;
+    private boolean isWatching;
 
-    public CSNightWatcherTask(CommandSleeper commandSleeper) {
-        this.isSkipping = false;
+    public CSNightWatcherTask(@NonNull WPCraft wpcraft, @NonNull CommandSleeper commandSleeper, @NonNull World world) {
+        this.wpcraft = wpcraft;
         this.commandSleeper = commandSleeper;
+        this.world = world;
+        this.isWatching = false;
     }
 
     @Override
     public void run() {
-        // Checks if all players are sleeping, if so skips the night
+
+        // Checks if all players are sleeping, if so skips the night and stops watching
         if (CSUtil.getNeededToSleep(world) <= CSUtil.getNumberSleeping(world, commandSleeper)) {
-            skipNight();
-
-            /**
-             * STOPPED HERE
-             * What starts the CSNightWatcher task?
-             * What stops the task if everyone is out of bed?
-             * Make a new CS Night Watcher everty time a player sleeps in a world?
-             * remove it once night skips or everyone is out of bed?
-            */
+            new CSNightSkipperTask(wpcraft, commandSleeper, world);
+            cancel();
         }
+        // POSSIBLY break plugin if you sleep while the night is skipping
+        // TODO bossbar status message updates go here
     }
     
-    // Returns if the night is activly being skipped
-    public boolean isSkipping() {
-        return isSkipping;
-    }
-
-    // Sets the world to watch for possible skipping
-    public void setWorld(World world) {
-        this.world = world;
-    }
-
-    private void skipNight() {
-        isSkipping = true;
-
-        /**
-             * STOPPED HERE
-             * What starts the CSNightWatcher task?
-             * What stops the task if everyone is out of bed?
-             * Make a new CS Night Watcher everty time a player sleeps in a world?
-             * remove it once night skips or everyone is out of bed?
-            */
-
-        // create Skip night task
-
-        //Send message
-
-        //Get people out of bed at the end of the night skip
-
-        //clear command sleepers
+    // Stops watching a world
+    @Override
+    public void cancel() {
+        isWatching = false;
+        // Remove boss bar
+        super.cancel();
     }
     
+    // Returns if the night is activly being watched
+    public boolean isWatching() {
+        return isWatching;
+    }
+
+    // Starts task to watch for a night to be skipped
+    public void watch() {
+        isWatching = true;
+        runTaskTimer(wpcraft, 1, 20);
+    }    
 }

@@ -19,14 +19,14 @@ public class CSUtil {
     }
 
     /**
-     * Checks if at least one player is in a physical bed on the same world as a player
+     * Checks if at least one player is in a world
      *
-     * @param player The player whos world you would like to check
+     * @param world The world to check for a physically sleeping player 
      * 
      * @return If a player is physically sleeping on the same world as another
      */
-    public static boolean hasPhysicalSleeper(@Nonnull Player player) {
-        return getNumberPhysicalSleepers(player.getWorld()) != 0;
+    public static boolean hasPhysicalSleeper(@Nonnull World world) {
+        return getNumberPhysicalSleepers(world) != 0;
     }
 
     /**
