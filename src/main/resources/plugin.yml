@@ -11,3 +11,6 @@ commands:
   jb:
     description: Output current jb in memory
     usage: /<command>
+  sleep:
+    description: Used to sleep once a person is in a physical bed
+    usage: /<command>
