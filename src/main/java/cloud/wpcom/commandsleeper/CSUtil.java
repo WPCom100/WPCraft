@@ -48,7 +48,12 @@ public class CSUtil {
      * @return An Integer of players needed to sleep in the world
      */
     public static Integer getNeededToSleep(@Nonnull World world) {
-        return world.getPlayers().size() / 2;
+        int playersNeeded = world.getPlayers().size() / 2;
+        if  (world.getPlayers().size() % 2 == 0) {
+            return playersNeeded;
+        } else {
+            return playersNeeded + 1;
+        }
     }
     
     /**

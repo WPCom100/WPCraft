@@ -3,7 +3,7 @@ version: "0.1"
 main: cloud.wpcom.WPCraft
 author: "WPCom"
 api-version: 1.19
-load: STARTUP
+load: POSTWORLD
 commands:
   bc:
     description: Send a broadcast to all players in the server, using proper prefixes

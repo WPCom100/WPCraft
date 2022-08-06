@@ -15,6 +15,8 @@ import cloud.wpcom.WPCraft;
 import cloud.wpcom.commandsleeper.CSUtil;
 import cloud.wpcom.commandsleeper.CommandSleeper;
 import cloud.wpcom.tasks.CSVirtualBedExpiryTask;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 
 public class CSSleepCommad implements TabExecutor {
 
@@ -36,7 +38,16 @@ public class CSSleepCommad implements TabExecutor {
         if (!CSUtil.isNight(world)) {
             playerSender.sendMessage(ChatColor.translateAlternateColorCodes('&',
                     "&cYou can't sleep right now! It's way too bright outside!"));
-            
+
+            return true;
+        }
+        
+        // Check if player is sleeping in a bed already, trollll them
+        if (playerSender.isSleeping()) {
+            TextComponent trollMessage = new TextComponent("For you Taylor: https://media2.giphy.com/media/5ftsmLIqktHQA/giphy.gif");
+            trollMessage.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL,
+                    "https://media2.giphy.com/media/5ftsmLIqktHQA/giphy.gif"));
+            playerSender.spigot().sendMessage(trollMessage);
             return true;
         }
         

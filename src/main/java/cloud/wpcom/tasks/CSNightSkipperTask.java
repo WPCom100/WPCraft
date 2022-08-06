@@ -16,16 +16,13 @@ public class CSNightSkipperTask extends BukkitRunnable {
     private final WPCraft wpcraft;
     private final CommandSleeper commandSleeper;
     private final World world;
+    private boolean isSkipping;
 
     public CSNightSkipperTask(@Nonnull WPCraft wpcraft, @Nonnull CommandSleeper commandSleeper, @Nonnull World world) {
         this.wpcraft = wpcraft;
         this.commandSleeper = commandSleeper;
         this.world = world;
-
-        // Start skipping world on an interval (rate/tick)
-        runTaskTimer(this.wpcraft, 0, 1);
-
-        // TODO Add boss bar that says skipping
+        isSkipping = false;
     }
 
     @Override
@@ -33,7 +30,7 @@ public class CSNightSkipperTask extends BukkitRunnable {
 
         long currentTime = world.getTime();
 
-        if (currentTime <= 1000) {
+        if (currentTime >= 1000) {
             world.setTime(currentTime + 80);
         } else {
             cancel();
@@ -44,6 +41,8 @@ public class CSNightSkipperTask extends BukkitRunnable {
     // Called once the night is done skipping
     @Override
     public void cancel() {
+        isSkipping = false;
+
         // Reset sleeping statistics
         world.getPlayers().forEach(player -> player.setStatistic(Statistic.TIME_SINCE_REST, 0));
 
@@ -59,9 +58,23 @@ public class CSNightSkipperTask extends BukkitRunnable {
 
         wpcraft.getServer()
                 .broadcastMessage(ChatColor.translateAlternateColorCodes('&',
-                        "&f[&bWPCraft&f] &eNight skipped! Back to the mine with ya"));
+                        "&f[&bWPCraft&f] &fNight skipped. Back to the mine with ya!"));
+
+        super.cancel();
 
         //TODO remove the bossbar status
+    }
+    
+    public boolean isSkipping() {
+        return isSkipping;
+    }
+
+    // Start skipping world on an interval (rate/tick)
+    public void skip() {
+        isSkipping = true;
+        runTaskTimer(this.wpcraft, 0, 1);
+
+        // TODO Add boss bar that says skipping
     }
     
 }

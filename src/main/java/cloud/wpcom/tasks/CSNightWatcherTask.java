@@ -1,5 +1,6 @@
 package cloud.wpcom.tasks;
 
+import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -14,12 +15,14 @@ public class CSNightWatcherTask extends BukkitRunnable {
     private final World world;
     private final CommandSleeper commandSleeper;
     private boolean isWatching;
+    private CSNightSkipperTask skipper;
 
     public CSNightWatcherTask(@NonNull WPCraft wpcraft, @NonNull CommandSleeper commandSleeper, @NonNull World world) {
         this.wpcraft = wpcraft;
         this.commandSleeper = commandSleeper;
         this.world = world;
-        this.isWatching = false;
+        isWatching = false;
+        skipper = new CSNightSkipperTask(this.wpcraft, this.commandSleeper, this.world);
     }
 
     @Override
@@ -27,7 +30,17 @@ public class CSNightWatcherTask extends BukkitRunnable {
 
         // Checks if all players are sleeping, if so skips the night and stops watching
         if (CSUtil.getNeededToSleep(world) <= CSUtil.getNumberSleeping(world, commandSleeper)) {
-            new CSNightSkipperTask(wpcraft, commandSleeper, world);
+            skipper.skip();
+
+            new BukkitRunnable() {
+            @Override
+            public void run() {
+                wpcraft.getServer()
+                .broadcastMessage(ChatColor.translateAlternateColorCodes('&',
+                        "&f[&bWPCraft&f] &fSkipping the night..."));
+            }
+        }.runTask(wpcraft);
+
             cancel();
         }
         // POSSIBLY break plugin if you sleep while the night is skipping
@@ -47,9 +60,14 @@ public class CSNightWatcherTask extends BukkitRunnable {
         return isWatching;
     }
 
-    // Starts task to watch for a night to be skipped
+    // Returns the skipper
+    public CSNightSkipperTask getSkipper() {
+        return skipper;
+    }
+
+    // Starts the task
     public void watch() {
-        isWatching = true;
         runTaskTimer(wpcraft, 1, 20);
-    }    
+        isWatching = true;
+    }
 }

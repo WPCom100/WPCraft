@@ -66,7 +66,6 @@ public class BJEvents implements Listener {
 
         // Check if the shift click/click was with a record
         if ((!event.getCurrentItem().getType().isRecord()) && (!event.getCursor().getType().isRecord())) {
-            wpcraft.getServer().broadcastMessage("not detected");
             return;
         }
 

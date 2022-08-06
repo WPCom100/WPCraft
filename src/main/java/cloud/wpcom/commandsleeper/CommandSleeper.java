@@ -66,5 +66,14 @@ public class CommandSleeper {
         commandSleepers.keySet().forEach(player -> players.add(player));
         return players;
     }
+
+    /**
+     * Returns a the number of players command sleeping
+     * 
+     * @return Number of players
+     */
+    public int count() {
+        return commandSleepers.size();
+    }
     
 }

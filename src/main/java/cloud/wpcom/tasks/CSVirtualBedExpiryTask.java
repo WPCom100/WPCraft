@@ -29,7 +29,7 @@ public class CSVirtualBedExpiryTask extends BukkitRunnable {
         // Send a message saying the virtual bed has expired
         wpcraft.getServer()
                 .broadcastMessage(ChatColor.translateAlternateColorCodes('&',
-                        "&f[&bWPCraft&f] &e[player]'s &fvirtual bed expired. ([sleeping]/[needed])"
+                        "&f[&bWPCraft&f] &e[player]&f's virtual bed expired. ([sleeping]/[needed])"
                                 .replace("[player]", player.getName())
                                 .replace("[sleeping]", CSUtil.getNumberSleeping(player.getWorld(), commandSleeper).toString())
                                 .replace("[needed]", CSUtil.getNeededToSleep(player.getWorld()).toString())));
@@ -45,7 +45,7 @@ public class CSVirtualBedExpiryTask extends BukkitRunnable {
     public void cancelByPlayer(Player playerForcing) {
         wpcraft.getServer()
                 .broadcastMessage(ChatColor.translateAlternateColorCodes('&',
-                        "&f[&bWPCraft&f] &e[player]'s &fvirtual bed was swiped from under them by &e[playerForcing]!"
+                        "&f[&bWPCraft&f] &e[player]&f's was robbed by &e[playerForcing]&f!"
                                 .replace("[player]", player.getName())
                                 .replace("[sleeping]", CSUtil.getNumberSleeping(player.getWorld(), commandSleeper).toString())
                                 .replace("[needed]", CSUtil.getNeededToSleep(player.getWorld()).toString())
