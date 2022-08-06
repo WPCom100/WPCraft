@@ -2,8 +2,8 @@ package cloud.wpcom.bedrockjukebox;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Jukebox;
 import org.bukkit.block.Block;
+import org.bukkit.block.Jukebox;
 import org.bukkit.block.data.type.Hopper;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;

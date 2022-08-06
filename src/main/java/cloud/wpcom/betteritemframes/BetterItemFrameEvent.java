@@ -1,12 +1,12 @@
 package cloud.wpcom.betteritemframes;
 
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Container;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.entity.ItemFrame;
-import org.bukkit.Material;
-import org.bukkit.Location;
-import org.bukkit.block.Container;
 
 public class BetterItemFrameEvent implements Listener {
 

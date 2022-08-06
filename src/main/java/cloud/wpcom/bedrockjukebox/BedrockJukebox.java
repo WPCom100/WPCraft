@@ -1,6 +1,7 @@
 package cloud.wpcom.bedrockjukebox;
 
 import java.util.ArrayList;
+
 import org.bukkit.Location;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Jukebox;

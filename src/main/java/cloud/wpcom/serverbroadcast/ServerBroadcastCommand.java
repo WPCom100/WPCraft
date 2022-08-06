@@ -1,13 +1,12 @@
 package cloud.wpcom.serverbroadcast;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import cloud.wpcom.WPCraft;
-
-import org.bukkit.ChatColor;
 
 
 public class ServerBroadcastCommand implements CommandExecutor {

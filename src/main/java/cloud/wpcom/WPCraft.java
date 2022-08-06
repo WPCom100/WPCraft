@@ -1,5 +1,8 @@
 package cloud.wpcom;
 
+import org.bukkit.ChatColor;
+import org.bukkit.plugin.java.JavaPlugin;
+
 import cloud.wpcom.amorstandarms.AmorStandArms;
 import cloud.wpcom.bedrockjukebox.BJCommand;
 import cloud.wpcom.bedrockjukebox.BJEvents;
@@ -10,9 +13,6 @@ import cloud.wpcom.commandsleeper.CSSleepCommad;
 import cloud.wpcom.commandsleeper.CommandSleeper;
 import cloud.wpcom.joinmessages.JoinMessageEvents;
 import cloud.wpcom.serverbroadcast.ServerBroadcastCommand;
-
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.ChatColor;
 
 public class WPCraft extends JavaPlugin {
 
