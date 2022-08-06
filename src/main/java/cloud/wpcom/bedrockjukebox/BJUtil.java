@@ -68,35 +68,30 @@ public class BJUtil {
         Block blockToCheck = j.getLocation().getBlock().getRelative(BlockFace.NORTH);
         if (blockToCheck.getType() == Material.HOPPER) { // NORTH
             if (isHopperFacing(j, blockToCheck)) {
-                WPCraft.server.broadcastMessage("Input hopper found to the north");
                 j.setInputHopperBlock(blockToCheck);
             }
         }
         blockToCheck = j.getLocation().getBlock().getRelative(BlockFace.EAST);
         if (blockToCheck.getType() == Material.HOPPER) { // EAST
             if (isHopperFacing(j, blockToCheck)) {
-                WPCraft.server.broadcastMessage("Input hopper found to the east");
                 j.setInputHopperBlock(blockToCheck);
             }
         }
         blockToCheck = j.getLocation().getBlock().getRelative(BlockFace.SOUTH);
         if (blockToCheck.getType() == Material.HOPPER) { // SOUTH
             if (isHopperFacing(j, blockToCheck)) {
-                WPCraft.server.broadcastMessage("Input hopper found to the south");
                 j.setInputHopperBlock(blockToCheck);
             }
         }
         blockToCheck = j.getLocation().getBlock().getRelative(BlockFace.WEST);
         if (blockToCheck.getType() == Material.HOPPER) { // WEST
             if (isHopperFacing(j, blockToCheck)) {
-                WPCraft.server.broadcastMessage("Input hopper found to the west");
                 j.setInputHopperBlock(blockToCheck);
             }
         }
         blockToCheck = j.getLocation().getBlock().getRelative(BlockFace.UP);
         if (blockToCheck.getType() == Material.HOPPER) { // ABOVE
             if (isHopperFacing(j, blockToCheck)) {
-                WPCraft.server.broadcastMessage("Input hopper found above");
                 j.setInputHopperBlock(blockToCheck);
             }
         }
@@ -107,7 +102,6 @@ public class BJUtil {
         Block blockToCheck = j.getLocation().getBlock().getRelative(BlockFace.DOWN);
         if (blockToCheck.getType() == Material.HOPPER) {
             if (isHopperUnder(j, blockToCheck)) {
-                WPCraft.server.broadcastMessage("Output hopper found below");
                 j.setOutputHopperBlock(blockToCheck);
             }
         }
@@ -130,8 +124,7 @@ public class BJUtil {
     public static void playNext(JukeboxWrapper j, WPCraft plugin) {
         int discIndex = j.getWaitingDisc();
         if (discIndex != -1) {
-            WPCraft.server.broadcastMessage("Jukebox has a waiting disk at: " + discIndex);
             j.playRecord(BJUtil.popHopperAtIndex(discIndex, j), plugin);
         }
     }
-}
+}   // TODO Add logging to console, insted of in game chat. TEMP pass server to util here

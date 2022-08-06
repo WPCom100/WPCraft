@@ -25,9 +25,9 @@ public class WPCraft extends JavaPlugin {
         getLogger().info("BetterItemFrames loaded!");
 
         // Load BedrockJukebox
-        BedrockJukebox bedrockJukebox = new BedrockJukebox();
-        getServer().getPluginManager().registerEvents(new BJEvents(this), this);
-        getCommand("jb").setExecutor(new BJCommands());
+        BedrockJukebox bedrockJukebox = new BedrockJukebox(this);
+        getServer().getPluginManager().registerEvents(new BJEvents(this, bedrockJukebox), this);
+        getCommand("jb").setExecutor(new BJCommands(bedrockJukebox));
         getLogger().info("BedrockJukebox loaded!");
 
         // Load ServerBroadcast
