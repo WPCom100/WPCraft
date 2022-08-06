@@ -8,7 +8,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import cloud.wpcom.WPCraft;
 
-public class JoinMessages implements Listener {
+public class JoinMessageEvents implements Listener {
     
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {

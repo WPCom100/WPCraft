@@ -3,11 +3,14 @@ version: "0.1"
 main: cloud.wpcom.WPCraft
 author: "WPCom"
 api-version: 1.19
-load: STARTUP
+load: POSTWORLD
 commands:
   bc:
     description: Send a broadcast to all players in the server, using proper prefixes
     usage: /<command> <message>
   jb:
     description: Output current jb in memory
+    usage: /<command>
+  sleep:
+    description: Used to sleep once a person is in a physical bed
     usage: /<command>

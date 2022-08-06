@@ -9,10 +9,11 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import cloud.wpcom.WPCraft;
-import cloud.wpcom.tasks.DiscDuration;
+import cloud.wpcom.tasks.BJDiscDurationTask;
 
 public class JukeboxWrapper {
 
+    private final WPCraft wpcraft;
     private Jukebox jukebox;
     private Location location;
     private boolean hasInputHopper = false; // TODO Multi hopper support
@@ -20,12 +21,13 @@ public class JukeboxWrapper {
     private Block inputHopper;
     private Block outputHopper;
     private boolean isPlaying = false;
-    public DiscDuration durationTask;
+    public BJDiscDurationTask durationTask;
     
-    public JukeboxWrapper(Jukebox j) {
+    public JukeboxWrapper(WPCraft wpcraft, Jukebox j) {
+        this.wpcraft = wpcraft;
         this.jukebox = j;
         this.location = this.jukebox.getLocation();
-        WPCraft.server.broadcastMessage("Jukebox Registered!");
+        this.wpcraft.getServer().broadcastMessage("Jukebox Registered!");
     }
     
     public Jukebox getBlock() {
@@ -43,7 +45,7 @@ public class JukeboxWrapper {
     public void setInputHopperBlock(Block inputHopper) {
         this.inputHopper = inputHopper;
         hasInputHopper = true;
-        WPCraft.server.broadcastMessage("Input hopper added");
+        wpcraft.getServer().broadcastMessage("Input hopper added");
     }
 
     public Block getInputHopperBlock() {
@@ -60,7 +62,7 @@ public class JukeboxWrapper {
 
     public void removeInputHopper() {
         hasInputHopper = false;
-        WPCraft.server.broadcastMessage("Input hopper removed ");
+        wpcraft.getServer().broadcastMessage("Input hopper removed ");
     }
 
     public boolean hasOutputHopper() {
@@ -70,7 +72,7 @@ public class JukeboxWrapper {
     public void setOutputHopperBlock(Block outputHopper) {
         this.outputHopper = outputHopper;
         hasOutputHopper = true;
-        WPCraft.server.broadcastMessage("Output hopper added");
+        wpcraft.getServer().broadcastMessage("Output hopper added");
     }
 
     public Block getOutputHopperBlock() {
@@ -87,7 +89,7 @@ public class JukeboxWrapper {
 
     public void removeOutputHopper() {
         hasOutputHopper = false;
-        WPCraft.server.broadcastMessage("Output hopper removed");
+        wpcraft.getServer().broadcastMessage("Output hopper removed");
     }
 
     public void setPlaying(boolean isPlaying) {
@@ -107,12 +109,12 @@ public class JukeboxWrapper {
         if (record.getType() == Material.AIR)
             return;
         jukebox.setRecord(record);
-        WPCraft.server.broadcastMessage("Playing Disk:" + record.toString());
+        wpcraft.getServer().broadcastMessage("Playing Disk:" + record.toString());
         if (jukebox.update())
             isPlaying = true;
 
-        durationTask = new DiscDuration(this, wpcraft);
-        durationTask.runTaskLater(wpcraft, JBUtil.getDiskDuration(record));
+        durationTask = new BJDiscDurationTask(wpcraft, this);
+        durationTask.runTaskLater(wpcraft, BJUtil.getDiskDuration(record));
     }
 
     public int getWaitingDisc() {

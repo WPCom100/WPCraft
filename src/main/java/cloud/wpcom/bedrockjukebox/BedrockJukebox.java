@@ -10,13 +10,18 @@ import cloud.wpcom.WPCraft;
 
 public class BedrockJukebox {
 
+    private final WPCraft wpcraft;
     private ArrayList<JukeboxWrapper> jukeboxes = new ArrayList<JukeboxWrapper>(0);
 
+    public BedrockJukebox(WPCraft wpcraft) {
+        this.wpcraft = wpcraft;
+    }
+
     public void addJukebox(Jukebox jb, WPCraft plugin) {
-        JukeboxWrapper jbw = new JukeboxWrapper(jb);
+        JukeboxWrapper jbw = new JukeboxWrapper(wpcraft, jb);
         jukeboxes.add(jbw);
-        JBUtil.registerInputHoppers(jbw);
-        JBUtil.registerOutputHopper(jbw);
+        BJUtil.registerInputHoppers(jbw);
+        BJUtil.registerOutputHopper(jbw);
         // Plays disc from input hopper on next tick
         if (jbw.hasInputHopper()) {
             new BukkitRunnable() {
@@ -36,7 +41,7 @@ public class BedrockJukebox {
         if (jbw.durationTask != null)
             jbw.durationTask.cancel();
         jukeboxes.remove(jbw);
-        WPCraft.server.broadcastMessage("Registered jukebox removed!");
+        wpcraft.getServer().broadcastMessage("Registered jukebox removed!");
     }
 
     public ArrayList<JukeboxWrapper> getJukeboxes() {

@@ -4,15 +4,21 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-import cloud.wpcom.WPCraft;
+import cloud.wpcom.bedrockjukebox.BedrockJukebox;
 import cloud.wpcom.bedrockjukebox.JukeboxWrapper;
 
-public class BedrockJukebox implements CommandExecutor {
+public class BJCommands implements CommandExecutor {
+
+    private final BedrockJukebox bedrockJukebox;
+
+    public BJCommands(BedrockJukebox bedrockJukebox) {
+        this.bedrockJukebox = bedrockJukebox;
+    }
     
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] mssg) {
 
-        for (JukeboxWrapper j : WPCraft.jb.getJukeboxes()) {
+        for (JukeboxWrapper j : bedrockJukebox.getJukeboxes()) {
 
             //sender.getServer().broadcastMessage(j.getBlock().toString() + j.getLocation().toString());
             sender.getServer().broadcastMessage(j.getInputHopperBlock().toString());

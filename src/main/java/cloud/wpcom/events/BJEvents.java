@@ -1,7 +1,8 @@
 package cloud.wpcom.events;
 
 import cloud.wpcom.WPCraft;
-import cloud.wpcom.bedrockjukebox.JBUtil;
+import cloud.wpcom.bedrockjukebox.BJUtil;
+import cloud.wpcom.bedrockjukebox.BedrockJukebox;
 import cloud.wpcom.bedrockjukebox.JukeboxWrapper;
 
 import org.bukkit.Chunk;
@@ -22,12 +23,14 @@ import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-public class BedrockJukebox implements Listener {
-    // TODO Handle static server calls in listeners
-    private final WPCraft wpcraft;
+public class BJEvents implements Listener {
 
-    public BedrockJukebox(WPCraft wpcraft) {
+    private final WPCraft wpcraft;
+    private final BedrockJukebox bedrockJukebox;
+
+    public BJEvents(WPCraft wpcraft, BedrockJukebox bedrockJukebox) {
         this.wpcraft = wpcraft;
+        this.bedrockJukebox = bedrockJukebox;
     }
 
     @EventHandler
@@ -36,7 +39,7 @@ public class BedrockJukebox implements Listener {
             return;
         
         // Check if the disc moved to an input hopper on a registred Jukebox
-        for (JukeboxWrapper j : WPCraft.jb.getJukeboxes()) {
+        for (JukeboxWrapper j : bedrockJukebox.getJukeboxes()) {
             if (!event.getDestination().equals(j.getInputHopperInventory()))
                 continue;
             // Check for overloading a jukebox
@@ -63,11 +66,10 @@ public class BedrockJukebox implements Listener {
 
         // Check if the shift click/click was with a record
         if ((!event.getCurrentItem().getType().isRecord()) && (!event.getCursor().getType().isRecord())) {
-            WPCraft.server.broadcastMessage("not detected");
             return;
         }
 
-        for (JukeboxWrapper j : WPCraft.jb.getJukeboxes()) {
+        for (JukeboxWrapper j : bedrockJukebox.getJukeboxes()) {
             // Discs should not be played by jukeboxes with active music
             if (j.isPlaying())
                 continue;
@@ -152,7 +154,7 @@ public class BedrockJukebox implements Listener {
                         
                         j.clearPlaying();
                         if (j.hasInputHopper())
-                            JBUtil.playNext(j, wpcraft);
+                            BJUtil.playNext(j, wpcraft);
                     }
                 }.runTask(wpcraft);
     }
@@ -163,11 +165,11 @@ public class BedrockJukebox implements Listener {
         // Check if the block placed is a Jukebox
         if (event.getBlock().getType() == Material.JUKEBOX) {
             // Add to jukebox db
-            WPCraft.jb.addJukebox((Jukebox) event.getBlock().getState(), wpcraft);
+            bedrockJukebox.addJukebox((Jukebox) event.getBlock().getState(), wpcraft);
 
             // Check if the block placed is a Hopper
         } else if (event.getBlock().getType() == Material.HOPPER) {
-            for (JukeboxWrapper j : WPCraft.jb.getJukeboxes()) {
+            for (JukeboxWrapper j : bedrockJukebox.getJukeboxes()) {
 
                 // If the hopper is not next to the registered Jukebox, continue
                 if (event.getBlock().getLocation().distance(j.getLocation()) != 1.0) {
@@ -175,13 +177,13 @@ public class BedrockJukebox implements Listener {
                 }
 
                 // If the hopper is facing the registered Jukebox
-                if (JBUtil.isHopperFacing(j, event.getBlock())) {
+                if (BJUtil.isHopperFacing(j, event.getBlock())) {
                     // Set input Hopper
                     j.setInputHopperBlock(event.getBlock());
                     return;
 
                     // Check if the hopper is under the Jukebox, meaning output hopper
-                } else if (JBUtil.isHopperUnder(j, event.getBlock())) {
+                } else if (BJUtil.isHopperUnder(j, event.getBlock())) {
                     // Set output Hopper
                     j.setOutputHopperBlock(event.getBlock());
                     return;
@@ -196,13 +198,13 @@ public class BedrockJukebox implements Listener {
         // Check if the block broken is a jukebox
         if (event.getBlock().getType() == Material.JUKEBOX) {
             // Remove from jukebox db
-            WPCraft.jb.removeJukebox((Jukebox) event.getBlock().getState());
+            bedrockJukebox.removeJukebox((Jukebox) event.getBlock().getState());
 
         // Check if the block broken is a Hopper
         } else if (event.getBlock().getType() == Material.HOPPER) {
 
             // If the hopper was a registered hopper, remove it.
-            for (JukeboxWrapper j : WPCraft.jb.getJukeboxes()) {
+            for (JukeboxWrapper j : bedrockJukebox.getJukeboxes()) {
 
                 // If Hopper is not next to a registered Jukebox, continue
                 if (event.getBlock().getLocation().distance(j.getLocation()) != 1.0) {
@@ -245,11 +247,11 @@ public class BedrockJukebox implements Listener {
         for (BlockState bs : c.getTileEntities()) {
             if (bs instanceof Jukebox) {
                 // If Jukebox is already registred, ignore
-                if (WPCraft.jb.jukeboxExist(bs))
+                if (bedrockJukebox.jukeboxExist(bs))
                     break;
                 // If Jukebox was not registred, register it    
                 else
-                    WPCraft.jb.addJukebox((Jukebox) bs, wpcraft);
+                    bedrockJukebox.addJukebox((Jukebox) bs, wpcraft);
             }
         }
     }
@@ -265,7 +267,7 @@ public class BedrockJukebox implements Listener {
         if (event.getClickedBlock().getType() != Material.JUKEBOX)
             return;
         // Find registered Jukebox and check if it is
-        for (JukeboxWrapper j : WPCraft.jb.getJukeboxes()) {
+        for (JukeboxWrapper j : bedrockJukebox.getJukeboxes()) {
             if (!j.getLocation().equals(event.getClickedBlock().getLocation()))
                 continue;
             if (!j.isPlaying()) {

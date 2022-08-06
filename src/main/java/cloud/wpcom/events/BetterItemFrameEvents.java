@@ -8,7 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.Location;
 import org.bukkit.block.Container;
 
-public class BetterItemFrames implements Listener {
+public class BetterItemFrameEvents implements Listener {
 
     // Blocks rotation of item frames unless holding an item frame in the right hand
     @EventHandler
