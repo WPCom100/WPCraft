@@ -1,4 +1,4 @@
-package cloud.wpcom.events;
+package cloud.wpcom.commandsleeper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,9 +12,6 @@ import org.bukkit.event.player.PlayerBedLeaveEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import cloud.wpcom.WPCraft;
-import cloud.wpcom.commandsleeper.CSUtil;
-import cloud.wpcom.commandsleeper.CommandSleeper;
-import cloud.wpcom.tasks.CSNightWatcherTask;
 
 public class CSBedEvents implements Listener {
 

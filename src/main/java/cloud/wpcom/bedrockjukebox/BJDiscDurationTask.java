@@ -1,10 +1,8 @@
-package cloud.wpcom.tasks;
+package cloud.wpcom.bedrockjukebox;
 
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import cloud.wpcom.WPCraft;
-import cloud.wpcom.bedrockjukebox.BJUtil;
-import cloud.wpcom.bedrockjukebox.JukeboxWrapper;
 
 public class BJDiscDurationTask extends BukkitRunnable {
 

@@ -1,4 +1,4 @@
-package cloud.wpcom.tasks;
+package cloud.wpcom.commandsleeper;
 
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -6,8 +6,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import cloud.wpcom.WPCraft;
-import cloud.wpcom.commandsleeper.CSUtil;
-import cloud.wpcom.commandsleeper.CommandSleeper;
 
 public class CSNightWatcherTask extends BukkitRunnable {
 

@@ -1,4 +1,4 @@
-package cloud.wpcom.events;
+package cloud.wpcom.joinmessages;
 
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;

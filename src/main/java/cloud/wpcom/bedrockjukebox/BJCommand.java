@@ -1,17 +1,14 @@
-package cloud.wpcom.commands;
+package cloud.wpcom.bedrockjukebox;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-import cloud.wpcom.bedrockjukebox.BedrockJukebox;
-import cloud.wpcom.bedrockjukebox.JukeboxWrapper;
-
-public class BJCommands implements CommandExecutor {
+public class BJCommand implements CommandExecutor {
 
     private final BedrockJukebox bedrockJukebox;
 
-    public BJCommands(BedrockJukebox bedrockJukebox) {
+    public BJCommand(BedrockJukebox bedrockJukebox) {
         this.bedrockJukebox = bedrockJukebox;
     }
     

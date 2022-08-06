@@ -1,9 +1,6 @@
-package cloud.wpcom.events;
+package cloud.wpcom.bedrockjukebox;
 
 import cloud.wpcom.WPCraft;
-import cloud.wpcom.bedrockjukebox.BJUtil;
-import cloud.wpcom.bedrockjukebox.BedrockJukebox;
-import cloud.wpcom.bedrockjukebox.JukeboxWrapper;
 
 import org.bukkit.Chunk;
 import org.bukkit.Material;

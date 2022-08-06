@@ -9,8 +9,6 @@ import javax.annotation.Nonnull;
 
 import org.bukkit.entity.Player;
 
-import cloud.wpcom.tasks.CSVirtualBedExpiryTask;
-
 public class CommandSleeper {
     
     private Map<Player, CSVirtualBedExpiryTask> commandSleepers;

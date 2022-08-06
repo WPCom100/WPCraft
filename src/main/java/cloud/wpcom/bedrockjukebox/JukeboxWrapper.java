@@ -9,7 +9,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import cloud.wpcom.WPCraft;
-import cloud.wpcom.tasks.BJDiscDurationTask;
 
 public class JukeboxWrapper {
 

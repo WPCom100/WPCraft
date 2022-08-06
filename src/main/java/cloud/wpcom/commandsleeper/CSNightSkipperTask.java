@@ -1,4 +1,4 @@
-package cloud.wpcom.tasks;
+package cloud.wpcom.commandsleeper;
 
 import javax.annotation.Nonnull;
 
@@ -9,7 +9,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import cloud.wpcom.WPCraft;
-import cloud.wpcom.commandsleeper.CommandSleeper;
 
 public class CSNightSkipperTask extends BukkitRunnable {
 
