@@ -14,3 +14,6 @@ commands:
   sleep:
     description: Used to sleep once a person is in a physical bed
     usage: /<command>
+  mm:
+    description: Adds a mailbox to the MouseMail module
+    usage: /<command>
