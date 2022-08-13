@@ -49,7 +49,8 @@ public class AmorStandArms implements Listener {
         recipe.setIngredient('T', Material.SMOOTH_STONE_SLAB);
 
         // Create the upgrade recipe for the special armor stand
-        ShapelessRecipe upgradeRecipe = new ShapelessRecipe(NamespacedKey.minecraft("armorstandarmsupgrade"), armorStandItem);
+        ShapelessRecipe upgradeRecipe = new ShapelessRecipe(NamespacedKey.minecraft("armorstandarmsupgrade"),
+                armorStandItem);
         upgradeRecipe.addIngredient(2, Material.STICK);
         upgradeRecipe.addIngredient(1, Material.ARMOR_STAND);
 
@@ -57,9 +58,14 @@ public class AmorStandArms implements Listener {
         this.wpcraft.getServer().addRecipe(recipe);
         this.wpcraft.getServer().addRecipe(upgradeRecipe);
     }
-    
+
     @EventHandler
     public void onArmorStandPlace(PlayerInteractEvent event) {
+        // Ignores events not involving the hand
+        if (event.getHand() == null) {
+            return;
+        }
+
         // Ignores offhand events to avoid duplicates
         if (event.getHand().equals(EquipmentSlot.OFF_HAND)) {
             return;
@@ -74,7 +80,7 @@ public class AmorStandArms implements Listener {
         final PlayerInventory playerInventory = player.getInventory();
 
         // Check if the block placed was a special armor stand in main hand
-        if (!playerInventory.getItemInMainHand().isSimilar(armorStandItem)) {   
+        if (!playerInventory.getItemInMainHand().isSimilar(armorStandItem)) {
             if (!player.getInventory().getItemInOffHand().isSimilar(armorStandItem)) { // Off hand
                 return;
             }
@@ -121,8 +127,6 @@ public class AmorStandArms implements Listener {
         }
     }
 
-    //TODO add entity kill event to check for armor stands with data that says it had arms
-    // if it had arms, drop one of the items
     @EventHandler
     public void onArmorStandBreak(EntityDeathEvent event) {
         // Check if a the entity was an armor stand
@@ -130,10 +134,10 @@ public class AmorStandArms implements Listener {
             return;
         }
 
+        // TODO Remove the normal armor stand from drops
         // Check if it was an armor stand with arms
         if (event.getEntity().getPersistentDataContainer().has(NamespacedKey.minecraft("arms"),
                 PersistentDataType.INTEGER)) {
-            event.getDrops().clear();
             event.getDrops().add(armorStandItem);
         }
     }
