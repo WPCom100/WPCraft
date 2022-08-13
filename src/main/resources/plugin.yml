@@ -16,4 +16,4 @@ commands:
     usage: /<command>
   mm:
     description: Adds a mailbox to the MouseMail module
-    usage: /<command>
+    usage: /<command> <player> <x> <y> <z>

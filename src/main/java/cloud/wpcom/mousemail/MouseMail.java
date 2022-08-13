@@ -1,118 +1,95 @@
 package cloud.wpcom.mousemail;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.EOFException;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.UUID;
 import java.util.logging.Level;
 
-import org.bukkit.Location;
-import org.bukkit.block.Chest;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.google.gson.Gson;
-
 import cloud.wpcom.WPCraft;
+import cloud.wpcom.offlineplayermanager.OfflinePlayerManager;
 
 public class MouseMail {
 
     private final WPCraft wpcraft;
-    public ArrayList<Mailbox> mailboxes = new ArrayList<>();
+    private final OfflinePlayerManager offlinePlayerManager;
+    private final File file;
+    private Mailboxes mailboxes;
 
-    public MouseMail(WPCraft wpcraft) throws IOException {
+    public MouseMail(WPCraft wpcraft, OfflinePlayerManager offlinePlayerManager) throws IOException {
         this.wpcraft = wpcraft;
+        this.offlinePlayerManager = offlinePlayerManager;
+        mailboxes = new Mailboxes(this.offlinePlayerManager);
+        file = new File(wpcraft.getDataFolder().getAbsolutePath() + "/mailboxes.dat");
 
+        // Check if file exists, if not creates the directory and blank file
+        if (!file.exists()) {
+            wpcraft.getLogger().log(Level.INFO, "mailboxes.dat not found. Creating it.");
+            file.getParentFile().mkdirs();
+            file.createNewFile();
+            return;
+        }
+
+        // If it does, load it
+        wpcraft.getLogger().log(Level.INFO, "Trying to load mailboxes.dat...");
         load();
     }
 
-    public void addMailbox(UUID uuid, Location l) {
-        mailboxes.add(new Mailbox(l, uuid, false)); // hasMail: checkMail(wpcraft.getServer().getPlayer(uuid))
+    public void addMailbox(UUID uuid, MMLocation location) {
+        mailboxes.add(uuid, location);
         save();
     }
 
     public void removeMailbox(UUID uuid) {
-        for (Mailbox mailbox : mailboxes) {
-            if (mailbox.getUUID().equals(uuid)) {
-                mailboxes.remove(mailbox);
-                return;
-            }
-        }
+        mailboxes.remove(uuid);
+        save();
     }
 
-    public Chest getMailbox(UUID uuid) {
-        for (Mailbox mailbox : mailboxes) {
-            if (mailbox.getUUID().equals(uuid)) {
-                return (Chest) mailbox.getLocation().getBlock();
-            }
-        }
-        return null; // TODO CHECK FOR NULL WHEN USED
-    }
-
-    public ArrayList<Mailbox> getMailboxes() {
-        return this.mailboxes;
-    }
-
-    public boolean checkMail(Player player) {
-        return !getMailbox(player.getUniqueId()).getInventory().isEmpty();
+    public Mailboxes getMailboxes() {
+        return mailboxes;
     }
 
     public void save() {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                try {
+                    FileOutputStream fos = new FileOutputStream(file);
+                    BufferedOutputStream bos = new BufferedOutputStream(fos);
+                    ObjectOutputStream oos = new ObjectOutputStream(bos);
+                    oos.writeObject(mailboxes);
+                    oos.close();
 
-        // new BukkitRunnable() {
-        // @Override
-        // public void run() {
-        try {
-            Gson gson = new Gson();
-            File file = new File(wpcraft.getDataFolder().getAbsolutePath() + "/mailboxes.json");
-            Writer writer = new FileWriter(file, false);
-            file.createNewFile();
-            gson.toJson(getMailboxes(), writer);
-            writer.flush();
-            writer.close();
-            wpcraft.getLogger().log(Level.INFO, "MouseMail mailboxes.json saved!");
-        } catch (IOException e) {
-            wpcraft.getLogger().log(Level.SEVERE,
-                    "MouseMail could not save mailboxes!");
-            e.printStackTrace();
-        }
-        // }
-        // }.runTaskAsynchronously(wpcraft);
-
-        // STOPPED HERE TRY TO MAKE LOCATION X,Y,Z INSTED?
-
+                } catch (IOException e) {
+                    wpcraft.getLogger().log(Level.SEVERE, "Error saving mailboxes:");
+                    e.printStackTrace();
+                }
+            }
+        }.runTaskAsynchronously(wpcraft);
     }
 
     private void load() {
         try {
-            Gson gson = new Gson();
-            File file = new File(wpcraft.getDataFolder().getAbsolutePath() + "/mailboxes.json");
-
-            if (file.exists()) {
-                Reader reader = new FileReader(file);
-                Mailbox[] m = gson.fromJson(reader, Mailbox[].class);
-                if (m != null) {
-                    mailboxes = new ArrayList<>(Arrays.asList(m));
-                    wpcraft.getLogger().log(Level.INFO, "mailboxes.json loaded!");
-                    return;
-                } else {
-                    wpcraft.getLogger().log(Level.INFO, "mailboxes.json empty. Ignoring.");
-                    return;
-                }
-            }
-
-            wpcraft.getLogger().log(Level.WARNING,
-                    "MouseMail could not find mailboxes.json! Creating the file for you...");
-            file.getParentFile().mkdirs();
-            return;
-
+            FileInputStream fis = new FileInputStream(file);
+            BufferedInputStream bis = new BufferedInputStream(fis);
+            ObjectInputStream ois = new ObjectInputStream(bis);
+            mailboxes = (Mailboxes) ois.readObject();
+            ois.close();
+        } catch (EOFException e) {
+            wpcraft.getLogger().log(Level.WARNING, "mailboxes.dat empty. Skipping...");
         } catch (IOException e) {
-            wpcraft.getLogger().log(Level.SEVERE, "MouseMail could not load mailboxes!");
+            wpcraft.getLogger().log(Level.SEVERE, "Error loading mailboxes:");
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            wpcraft.getLogger().log(Level.SEVERE, "Error loading mailboxes:");
             e.printStackTrace();
         }
     }

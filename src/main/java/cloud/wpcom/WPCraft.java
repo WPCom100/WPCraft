@@ -14,8 +14,10 @@ import cloud.wpcom.commandsleeper.CSBedEvents;
 import cloud.wpcom.commandsleeper.CSSleepCommad;
 import cloud.wpcom.commandsleeper.CommandSleeper;
 import cloud.wpcom.joinmessages.JoinMessageEvents;
+import cloud.wpcom.mousemail.MMJoinEvent;
 import cloud.wpcom.mousemail.MMSetupCommand;
 import cloud.wpcom.mousemail.MouseMail;
+import cloud.wpcom.offlineplayermanager.OfflinePlayerManager;
 import cloud.wpcom.serverbroadcast.ServerBroadcastCommand;
 
 public class WPCraft extends JavaPlugin {
@@ -59,15 +61,19 @@ public class WPCraft extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new AmorStandArms(this), this);
         getLogger().info("ArmorStandArms loaded!");
 
+        // Load OfflinePlayers
+        OfflinePlayerManager offlinePlayerManager = new OfflinePlayerManager(this);
+        getLogger().info("OfflinePlayerManager loaded!");
+
         // Load MouseMail
         MouseMail mouseMail;
         try {
-            mouseMail = new MouseMail(this);
-            getCommand("mm").setExecutor(new MMSetupCommand(this, mouseMail));
+            mouseMail = new MouseMail(this, offlinePlayerManager);
+            getCommand("mm").setExecutor(new MMSetupCommand(mouseMail, offlinePlayerManager));
+            getServer().getPluginManager().registerEvents(new MMJoinEvent(this, mouseMail), this);
             getLogger().info("MouseMail loaded!");
         } catch (IOException e) { // Handled in class
         }
-
     }
 
     @Override

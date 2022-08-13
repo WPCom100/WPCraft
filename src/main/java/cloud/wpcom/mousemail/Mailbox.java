@@ -1,14 +1,18 @@
 package cloud.wpcom.mousemail;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 import org.bukkit.Location;
+import org.bukkit.block.Chest;
 
-public class Mailbox {
+import cloud.wpcom.WPCraft;
 
-    private final Location location;
+public class Mailbox implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+    private final MMLocation location;
     private final UUID uuid;
-    private Boolean hasMail;
 
     /**
      * 
@@ -16,28 +20,31 @@ public class Mailbox {
      * 
      * @param location Location of the mailbox
      * @param uuid     UUID of the owner of the mailbox
-     * @param hasMail  If the mailbox currently has mail
      * 
      */
-    public Mailbox(Location location, UUID uuid, Boolean hasMail) {
+    public Mailbox(MMLocation location, UUID uuid) {
         this.location = location;
         this.uuid = uuid;
-        this.hasMail = hasMail;
     }
 
-    public Location getLocation() {
-        return this.location;
+    public Location getLocation(WPCraft wpcraft) {
+        return this.location.getLocation(wpcraft);
     }
 
     public UUID getUUID() {
         return this.uuid;
     }
 
-    public Boolean getHasMail() {
-        return this.hasMail;
+    public boolean checkMail(WPCraft wpcraft) {
+        if (((Chest) getLocation(wpcraft).getBlock().getState()).getInventory().isEmpty()) {
+            return false;
+        }
+        return true;
     }
 
-    public void setHasMail(Boolean hasMail) {
-        this.hasMail = hasMail;
+    @Override
+    public String toString() {
+        return "UUID: " + getUUID() + "\n" + "Location: " + location;
     }
+
 }
