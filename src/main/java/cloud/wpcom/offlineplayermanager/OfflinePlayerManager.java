@@ -29,7 +29,8 @@ public class OfflinePlayerManager {
      */
     public OfflinePlayerManager(@Nonnull WPCraft wpcraft) {
         this.wpcraft = wpcraft;
-        playerList = new File(wpcraft.getDataFolder().getAbsolutePath() + "/../../usercache.json");
+        final File file = new File(wpcraft.getDataFolder().getParentFile().getAbsolutePath()); // TODO DON'T LIKE
+        playerList = new File(file.getParentFile().getAbsolutePath() + "/usercache.json");
 
         loadPlayers();
     }
