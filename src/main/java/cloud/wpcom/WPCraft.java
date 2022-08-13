@@ -1,5 +1,7 @@
 package cloud.wpcom;
 
+import java.io.IOException;
+
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -12,12 +14,21 @@ import cloud.wpcom.commandsleeper.CSBedEvents;
 import cloud.wpcom.commandsleeper.CSSleepCommad;
 import cloud.wpcom.commandsleeper.CommandSleeper;
 import cloud.wpcom.joinmessages.JoinMessageEvents;
+import cloud.wpcom.mousemail.MMJoinEvent;
+import cloud.wpcom.mousemail.MMSetupCommand;
+import cloud.wpcom.mousemail.MouseMail;
+import cloud.wpcom.offlineplayermanager.OfflinePlayerManager;
 import cloud.wpcom.serverbroadcast.ServerBroadcastCommand;
 
 public class WPCraft extends JavaPlugin {
 
-    public static final String PREFIX = "[" + ChatColor.AQUA + "WPCraft" + ChatColor.WHITE + "]"; // Prefix for all messages sent from server
-    public static final String PM_PREFIX = "[" + ChatColor.RED + "PM" + ChatColor.WHITE + "]"; // Prefix for all private messages/confirmations sent from the server to a player
+    public static final String PREFIX = "[" + ChatColor.AQUA + "WPCraft" + ChatColor.WHITE + "]"; // Prefix for all
+                                                                                                  // messages sent from
+                                                                                                  // server
+    public static final String PM_PREFIX = "[" + ChatColor.RED + "PM" + ChatColor.WHITE + "]"; // Prefix for all private
+                                                                                               // messages/confirmations
+                                                                                               // sent from the server
+                                                                                               // to a player
 
     @Override
     public void onEnable() {
@@ -48,9 +59,21 @@ public class WPCraft extends JavaPlugin {
 
         // Load Armor Stand Arms
         getServer().getPluginManager().registerEvents(new AmorStandArms(this), this);
-        getLogger().info("Armor Stand Arms loaded!");
-        
+        getLogger().info("ArmorStandArms loaded!");
 
+        // Load OfflinePlayers
+        OfflinePlayerManager offlinePlayerManager = new OfflinePlayerManager(this);
+        getLogger().info("OfflinePlayerManager loaded!");
+
+        // Load MouseMail
+        MouseMail mouseMail;
+        try {
+            mouseMail = new MouseMail(this, offlinePlayerManager);
+            getCommand("mm").setExecutor(new MMSetupCommand(mouseMail, offlinePlayerManager));
+            getServer().getPluginManager().registerEvents(new MMJoinEvent(this, mouseMail), this);
+            getLogger().info("MouseMail loaded!");
+        } catch (IOException e) { // Handled in class
+        }
     }
 
     @Override
