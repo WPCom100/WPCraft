@@ -12,7 +12,6 @@ import cloud.wpcom.WPCraft;
 
 public class JukeboxWrapper {
 
-    private final WPCraft wpcraft;
     private Jukebox jukebox;
     private Location location;
     private boolean hasInputHopper = false; // TODO Multi hopper support
@@ -22,11 +21,9 @@ public class JukeboxWrapper {
     private boolean isPlaying = false;
     public BJDiscDurationTask durationTask;
     
-    public JukeboxWrapper(WPCraft wpcraft, Jukebox j) {
-        this.wpcraft = wpcraft;
+    public JukeboxWrapper(Jukebox j) {
         this.jukebox = j;
         this.location = this.jukebox.getLocation();
-        this.wpcraft.getServer().broadcastMessage("Jukebox Registered!");
     }
     
     public Jukebox getBlock() {
@@ -44,7 +41,6 @@ public class JukeboxWrapper {
     public void setInputHopperBlock(Block inputHopper) {
         this.inputHopper = inputHopper;
         hasInputHopper = true;
-        wpcraft.getServer().broadcastMessage("Input hopper added");
     }
 
     public Block getInputHopperBlock() {
@@ -61,7 +57,6 @@ public class JukeboxWrapper {
 
     public void removeInputHopper() {
         hasInputHopper = false;
-        wpcraft.getServer().broadcastMessage("Input hopper removed ");
     }
 
     public boolean hasOutputHopper() {
@@ -71,7 +66,6 @@ public class JukeboxWrapper {
     public void setOutputHopperBlock(Block outputHopper) {
         this.outputHopper = outputHopper;
         hasOutputHopper = true;
-        wpcraft.getServer().broadcastMessage("Output hopper added");
     }
 
     public Block getOutputHopperBlock() {
@@ -88,7 +82,6 @@ public class JukeboxWrapper {
 
     public void removeOutputHopper() {
         hasOutputHopper = false;
-        wpcraft.getServer().broadcastMessage("Output hopper removed");
     }
 
     public void setPlaying(boolean isPlaying) {
@@ -108,7 +101,6 @@ public class JukeboxWrapper {
         if (record.getType() == Material.AIR)
             return;
         jukebox.setRecord(record);
-        wpcraft.getServer().broadcastMessage("Playing Disk:" + record.toString());
         if (jukebox.update())
             isPlaying = true;
 

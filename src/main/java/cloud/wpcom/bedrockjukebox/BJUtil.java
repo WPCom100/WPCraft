@@ -63,7 +63,7 @@ public class BJUtil {
         return false;
     }
 
-    // Checks if a input hopper (facing) is attached to a jukebox and registers them
+    // Checks if a input hopper is attached to (facing) a jukebox and registers them
     public static void registerInputHoppers(JukeboxWrapper j) { // TODO Multi hopper support, future should return block array
         Block blockToCheck = j.getLocation().getBlock().getRelative(BlockFace.NORTH);
         if (blockToCheck.getType() == Material.HOPPER) { // NORTH

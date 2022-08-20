@@ -35,7 +35,6 @@ public class MMLocation implements Serializable {
      * 
      * Data class for storing a location without a valid bukkit location
      * 
-     * @param wpcraft Server plugin
      * @param world   The name of the world which the location exists, or null
      * @param x       X position
      * @param y       Y position
