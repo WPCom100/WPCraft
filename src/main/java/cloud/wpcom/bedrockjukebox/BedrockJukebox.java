@@ -13,13 +13,24 @@ public class BedrockJukebox {
 
     private final WPCraft wpcraft;
     private ArrayList<JukeboxWrapper> jukeboxes = new ArrayList<JukeboxWrapper>(0);
+    private final JukeboxManager jukeboxManager;
 
     public BedrockJukebox(WPCraft wpcraft) {
         this.wpcraft = wpcraft;
+        jukeboxManager = new JukeboxManager(this.wpcraft, this);
     }
 
+    public void registerJukebox(Jukebox jb) {
+        jukeboxManager.add(jb); // Check for input hoppers etc here?
+    }
+
+    public void deregisterJukebox(Jukebox jb) {
+        jukeboxManager.remove(jb);
+    }  
+
+    @Deprecated
     public void addJukebox(Jukebox jb, WPCraft plugin) {
-        JukeboxWrapper jbw = new JukeboxWrapper(wpcraft, jb);
+        JukeboxWrapper jbw = new JukeboxWrapper(jb);
         jukeboxes.add(jbw);
         BJUtil.registerInputHoppers(jbw);
         BJUtil.registerOutputHopper(jbw);
@@ -34,6 +45,7 @@ public class BedrockJukebox {
         }
     }
 
+    @Deprecated
     public void removeJukebox(Jukebox jb) {
         // Get the jukebox wrapper for the appropriate jukebox
         JukeboxWrapper jbw = getJukeboxAt(jb.getLocation());
@@ -42,13 +54,14 @@ public class BedrockJukebox {
         if (jbw.durationTask != null)
             jbw.durationTask.cancel();
         jukeboxes.remove(jbw);
-        wpcraft.getServer().broadcastMessage("Registered jukebox removed!");
     }
 
+    @Deprecated
     public ArrayList<JukeboxWrapper> getJukeboxes() {
         return jukeboxes;
     }
 
+    @Deprecated
     public JukeboxWrapper getJukeboxAt(Location l) {
         for (JukeboxWrapper jb : jukeboxes) {
             if (jb.getLocation().equals(l)) {
@@ -58,6 +71,7 @@ public class BedrockJukebox {
         return null;
     }
 
+    @Deprecated
     public boolean jukeboxExist(BlockState b) {
         for (JukeboxWrapper j : jukeboxes) {
             if (j.getBlock().getLocation().equals(b.getBlock().getLocation())) {
@@ -65,5 +79,9 @@ public class BedrockJukebox {
             }
         }
         return false;
+    }
+
+    public JukeboxManager getManager() {
+        return jukeboxManager;
     }
 }
