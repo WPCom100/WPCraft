@@ -1,10 +1,16 @@
 package cloud.wpcom.bedrockjukebox;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Nullable;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Jukebox;
-import org.bukkit.block.data.type.Hopper;
+import org.bukkit.block.Hopper;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -12,12 +18,14 @@ import cloud.wpcom.WPCraft;
 
 public class JukeboxWrapper {
 
-    private Jukebox jukebox;
-    private Location location;
-    private boolean hasInputHopper = false; // TODO Multi hopper support
+    private final Jukebox jukebox;
+    private final Location location;
+    private boolean hasInputHopper = false;
     private boolean hasOutputHopper = false;
+    @Deprecated
     private Block inputHopper;
-    private Block outputHopper;
+    private Map<BlockFace, Hopper> inputHoppers = new HashMap<>();
+    private Hopper outputHopper;
     private boolean isPlaying = false;
     public BJDiscDurationTask durationTask;
     
@@ -38,23 +46,53 @@ public class JukeboxWrapper {
         return hasInputHopper;
     }
 
+    public void addInput(Hopper hopper, BlockFace bf) {
+        inputHoppers.put(bf, hopper);
+        hasInputHopper = true;
+    }
+
+    @Deprecated //Remove
     public void setInputHopperBlock(Block inputHopper) {
         this.inputHopper = inputHopper;
         hasInputHopper = true;
     }
 
+    @Nullable
+    public Hopper getInput(BlockFace bf) {  // TODO Check for null in uses
+        return inputHoppers.get(bf);
+    }
+
+    public Block getInputHopperBlock(BlockFace bf) { //TODO Look at uses of this and see if it can be removed?
+        return (Block) getInput(bf);
+    }
+
+    public Inventory getInputInventory(BlockFace bf) {
+        return getInput(bf).getInventory();
+    }
+
+    public void removeInput(BlockFace bf) {
+        inputHoppers.remove(bf);
+        if (inputHoppers.size() == 0) {
+            hasInputHopper = false;
+        }
+    }
+
+    @Deprecated //Recreated
     public Block getInputHopperBlock() {
         return inputHopper;
     }
 
+    @Deprecated //Recreated
     public Hopper getInputHopper() {
         return (Hopper) inputHopper.getBlockData();
     }
 
+    @Deprecated //Recreated
     public Inventory getInputHopperInventory() {
         return ((org.bukkit.block.Hopper) getInputHopperBlock().getState()).getInventory();
     }
 
+    @Deprecated //Recreated
     public void removeInputHopper() {
         hasInputHopper = false;
     }
@@ -62,25 +100,32 @@ public class JukeboxWrapper {
     public boolean hasOutputHopper() {
         return hasOutputHopper;
     }
-    
-    public void setOutputHopperBlock(Block outputHopper) {
-        this.outputHopper = outputHopper;
+
+    public void setOutput(Hopper hopper) {
+        outputHopper = hopper;
         hasOutputHopper = true;
     }
-
-    public Block getOutputHopperBlock() {
+    
+    @Deprecated //RECREATE
+    public void setOutputHopperBlock(Block outputHopper) {
+        this.outputHopper = (Hopper) outputHopper.getBlockData();
+        hasOutputHopper = true;
+    }
+    
+    public Hopper getOutput() {
         return outputHopper;
     }
 
-    public Hopper getOutputHopper() {
-        return (Hopper) outputHopper.getBlockData();
+    public Block getOutputHopperBlock() {
+        return outputHopper.getBlock();
     }
 
-    public Inventory getOutputHopperInventory() {
-        return ((org.bukkit.block.Hopper) this.getOutputHopperBlock().getState()).getInventory();
+    public Inventory getOutputInventory() {
+        return outputHopper.getInventory();
     }
 
     public void removeOutputHopper() {
+        outputHopper = null;
         hasOutputHopper = false;
     }
 

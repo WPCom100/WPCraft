@@ -21,10 +21,27 @@ public class BedrockJukebox {
     }
 
     public void registerJukebox(Jukebox jb) {
-        jukeboxManager.add(jb); // Check for input hoppers etc here?
+        jukeboxManager.add(jb);
+        BJUtil.registerInputHoppers(jukeboxManager, jb);
+        BJUtil.registerOutputHopper(jukeboxManager, jb);
+        
+        // Plays disc from input hopper on next tick
+        // TODO Do this somewhere else? funcitoned out?
+        if (jukeboxManager.get(jb).hasInputHopper()) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    jukeboxManager.get(jb).playRecord(jukeboxManager.get(jb).popWaitingDisc(), wpcraft);
+                }
+            }.runTask(wpcraft);
+        }
     }
 
     public void deregisterJukebox(Jukebox jb) {
+        // Stop any running tasks before removing it
+        if (jukeboxManager.get(jb).durationTask != null) // TODO Duration task private instead of public
+            jukeboxManager.get(jb).durationTask.cancel();
+
         jukeboxManager.remove(jb);
     }  
 
@@ -32,8 +49,8 @@ public class BedrockJukebox {
     public void addJukebox(Jukebox jb, WPCraft plugin) {
         JukeboxWrapper jbw = new JukeboxWrapper(jb);
         jukeboxes.add(jbw);
-        BJUtil.registerInputHoppers(jbw);
-        BJUtil.registerOutputHopper(jbw);
+        // BJUtil.registerInputHoppers(jbw);
+        // BJUtil.registerOutputHopper(jbw);
         // Plays disc from input hopper on next tick
         if (jbw.hasInputHopper()) {
             new BukkitRunnable() {

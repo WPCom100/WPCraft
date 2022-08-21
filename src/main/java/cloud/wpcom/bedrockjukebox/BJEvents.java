@@ -119,7 +119,7 @@ public class BJEvents implements Listener {
             return false;
         }
 
-        if (event.getClickedInventory().equals(j.getOutputHopperInventory())) {
+        if (event.getClickedInventory().equals(j.getOutputInventory())) {
             if (j.getBlock().getPlaying() != Material.AIR)
                 checkHopperNextTick(j);
 
@@ -129,7 +129,7 @@ public class BJEvents implements Listener {
 
             if (!event.isShiftClick())
                 return false;
-            if (!event.getWhoClicked().getOpenInventory().getTopInventory().equals(j.getOutputHopperInventory()))
+            if (!event.getWhoClicked().getOpenInventory().getTopInventory().equals(j.getOutputInventory()))
                 return false;
 
             if (j.getBlock().getPlaying() != Material.AIR)
@@ -146,7 +146,7 @@ public class BJEvents implements Listener {
                     @Override
                     public void run() {
                         // If the output hopper is still full
-                        if (j.getOutputHopperInventory().addItem(new ItemStack(j.getBlock().getPlaying())).size() == 1)
+                        if (j.getOutputInventory().addItem(new ItemStack(j.getBlock().getPlaying())).size() == 1)
                             return;
                         
                         j.clearPlaying();
@@ -174,13 +174,13 @@ public class BJEvents implements Listener {
                 }
 
                 // If the hopper is facing the registered Jukebox
-                if (BJUtil.isHopperFacing(j, event.getBlock())) {
+                if (BJUtil.isHopperFacing((Jukebox) j.getBlock().getBlockData(), event.getBlock())) {
                     // Set input Hopper
                     j.setInputHopperBlock(event.getBlock());
                     return;
 
                     // Check if the hopper is under the Jukebox, meaning output hopper
-                } else if (BJUtil.isHopperUnder(j, event.getBlock())) {
+                } else if (BJUtil.isHopperUnder(event.getBlock())) {
                     // Set output Hopper
                     j.setOutputHopperBlock(event.getBlock());
                     return;

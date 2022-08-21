@@ -3,6 +3,8 @@ package cloud.wpcom.bedrockjukebox;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.Hopper;
+import org.bukkit.block.Jukebox;
 import org.bukkit.block.data.Directional;
 import org.bukkit.inventory.ItemStack;
 
@@ -46,16 +48,16 @@ public class BJUtil {
         }
     }
 
-    // Check if the given Block is under the given Jukebox Wrapper
-    public static boolean isHopperUnder(JukeboxWrapper jb, Block hopper) {
+    // Check if hopper is under  jukebox
+    public static boolean isHopperUnder(Block hopper) {
         if (hopper.getRelative(BlockFace.UP).getType() == Material.JUKEBOX) {
             return true;
         }
         return false;
     }
 
-    // Check if the given block (hopper) is facing (outputing) the given Jukebox Wrapper
-    public static boolean isHopperFacing(JukeboxWrapper jb, Block hopper) {
+    // Check if the given block (hopper) is facing (outputing) the given Jukebox
+    public static boolean isHopperFacing(Jukebox jb, Block hopper) {
         if (hopper.getRelative(((Directional) hopper.getBlockData()).getFacing())
                 .getLocation().equals(jb.getLocation())) {
             return true;
@@ -64,51 +66,57 @@ public class BJUtil {
     }
 
     // Checks if a input hopper is attached to (facing) a jukebox and registers them
-    public static void registerInputHoppers(JukeboxWrapper j) { // TODO Multi hopper support, future should return block array
-        Block blockToCheck = j.getLocation().getBlock().getRelative(BlockFace.NORTH);
+    public static void registerInputHoppers(JukeboxManager jukeboxManager, Jukebox jb) {
+        // Check if jukebox exists
+        if (jukeboxManager.get(jb) == null) {
+            return;
+        }
+
+        Block blockToCheck = jb.getLocation().getBlock().getRelative(BlockFace.NORTH);
         if (blockToCheck.getType() == Material.HOPPER) { // NORTH
-            if (isHopperFacing(j, blockToCheck)) {
-                j.setInputHopperBlock(blockToCheck);
+            if (isHopperFacing(jb, blockToCheck)) {
+                jukeboxManager.registerInputHopper(jb, (Hopper) blockToCheck.getBlockData(), BlockFace.NORTH);
             }
         }
-        blockToCheck = j.getLocation().getBlock().getRelative(BlockFace.EAST);
+        blockToCheck = jb.getLocation().getBlock().getRelative(BlockFace.EAST);
         if (blockToCheck.getType() == Material.HOPPER) { // EAST
-            if (isHopperFacing(j, blockToCheck)) {
-                j.setInputHopperBlock(blockToCheck);
+            if (isHopperFacing(jb, blockToCheck)) {
+                jukeboxManager.registerInputHopper(jb, (Hopper) blockToCheck.getBlockData(), BlockFace.EAST);
             }
         }
-        blockToCheck = j.getLocation().getBlock().getRelative(BlockFace.SOUTH);
+        blockToCheck = jb.getLocation().getBlock().getRelative(BlockFace.SOUTH);
         if (blockToCheck.getType() == Material.HOPPER) { // SOUTH
-            if (isHopperFacing(j, blockToCheck)) {
-                j.setInputHopperBlock(blockToCheck);
+            if (isHopperFacing(jb, blockToCheck)) {
+                jukeboxManager.registerInputHopper(jb, (Hopper) blockToCheck.getBlockData(), BlockFace.SOUTH);
             }
         }
-        blockToCheck = j.getLocation().getBlock().getRelative(BlockFace.WEST);
+        blockToCheck = jb.getLocation().getBlock().getRelative(BlockFace.WEST);
         if (blockToCheck.getType() == Material.HOPPER) { // WEST
-            if (isHopperFacing(j, blockToCheck)) {
-                j.setInputHopperBlock(blockToCheck);
+            if (isHopperFacing(jb, blockToCheck)) {
+                jukeboxManager.registerInputHopper(jb, (Hopper) blockToCheck.getBlockData(), BlockFace.WEST);
             }
         }
-        blockToCheck = j.getLocation().getBlock().getRelative(BlockFace.UP);
+        blockToCheck = jb.getLocation().getBlock().getRelative(BlockFace.UP);
         if (blockToCheck.getType() == Material.HOPPER) { // ABOVE
-            if (isHopperFacing(j, blockToCheck)) {
-                j.setInputHopperBlock(blockToCheck);
+            if (isHopperFacing(jb, blockToCheck)) {
+                jukeboxManager.registerInputHopper(jb, (Hopper) blockToCheck.getBlockData(), BlockFace.UP);
             }
         }
     }
 
     // Checks if a output hopper is below a jukebox and registers it
-    public static void registerOutputHopper(JukeboxWrapper j) {
-        Block blockToCheck = j.getLocation().getBlock().getRelative(BlockFace.DOWN);
+    public static void registerOutputHopper(JukeboxManager jukeboxManager, Jukebox jb) {
+        final Block blockToCheck = jb.getLocation().getBlock().getRelative(BlockFace.DOWN);
         if (blockToCheck.getType() == Material.HOPPER) {
-            if (isHopperUnder(j, blockToCheck)) {
-                j.setOutputHopperBlock(blockToCheck);
+            if (isHopperUnder(blockToCheck)) {
+                jukeboxManager.registerOutputHopper(jb, (Hopper) blockToCheck.getBlockData());
             }
         }
     }
 
     // Returns item at a location in a hopper, removing it. AKA Popping
     // Returns AIR if no disc is found
+    @Deprecated // TODO RECREATE (MHS)
     public static ItemStack popHopperAtIndex(int index, JukeboxWrapper j) {
         ItemStack waitingDisc = new ItemStack(Material.AIR);
         if (index == -1)
@@ -127,4 +135,4 @@ public class BJUtil {
             j.playRecord(BJUtil.popHopperAtIndex(discIndex, j), plugin);
         }
     }
-}   // TODO Add logging to console, insted of in game chat. TEMP pass server to util here
+}

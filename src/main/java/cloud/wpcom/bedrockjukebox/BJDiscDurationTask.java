@@ -27,7 +27,7 @@ public class BJDiscDurationTask extends BukkitRunnable {
             return;
 
         // Check if output hopper is full
-        if (j.getOutputHopperInventory().addItem(new ItemStack(j.getBlock().getPlaying())).size() == 1) {
+        if (j.getOutputInventory().addItem(new ItemStack(j.getBlock().getPlaying())).size() == 1) {
             wpcraft.getServer().broadcastMessage("Output Hopper full");
             return;
         }

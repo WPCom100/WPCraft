@@ -3,12 +3,16 @@ package cloud.wpcom.bedrockjukebox;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.Hopper;
 import org.bukkit.block.Jukebox;
 
 import cloud.wpcom.WPCraft;
 
 public class JukeboxManager {
-
+    
     private final WPCraft wpcraft;
     private final BedrockJukebox bedrockJukebox;
     private Map<Jukebox, JukeboxWrapper> jukeboxes;
@@ -32,20 +36,6 @@ public class JukeboxManager {
      */
     public void add(Jukebox jb) {
         jukeboxes.put(jb, new JukeboxWrapper(jb));
-
-        // JukeboxWrapper jbw = new JukeboxWrapper(jb);
-        // jukeboxes.add(jbw);
-        BJUtil.registerInputHoppers(jbw);
-        BJUtil.registerOutputHopper(jbw);
-        // Plays disc from input hopper on next tick
-        if (jbw.hasInputHopper()) {
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    jbw.playRecord(jbw.popWaitingDisc(), plugin);
-                }
-            }.runTask(plugin);
-        }
     }
 
     /**
@@ -54,14 +44,42 @@ public class JukeboxManager {
      * @param jb The jukebox to remove
      */
     public void remove(Jukebox jb) {
-        // Get the jukebox wrapper for the appropriate jukebox
-        final JukeboxWrapper jbw = jukeboxes.get(jb);
-
-        // Stop any running tasks before removing it
-        if (jbw.durationTask != null) {
-            jbw.durationTask.cancel();
-        }
         jukeboxes.remove(jb);
+    }
+
+    /**
+     * Gets the jukebox wrapper for the given jukebox. Returns
+     * {@code null} if not found.
+     * 
+     * @param jb Jukebox to look for
+     * @return Wrapper of the jukebox or null
+     */
+    @Nullable
+    public JukeboxWrapper get(Jukebox jb) {
+        return jukeboxes.get(jb);
+    }
+
+    /**
+     * Register an input hopper to a jukebox. A jukebox
+     * can have several input hoppers.
+     * 
+     * @param jb Jukebox to register hopper with
+     * @param hopper Hopper to be registered
+     */
+    public void registerInputHopper(Jukebox jb, Hopper hopper, BlockFace bf) {
+        get(jb).addInput(hopper, bf);
+    }
+
+    /**
+     * Register an output hopper to a jukebox. A jukebox can only
+     * have one output hopper. Running this a second time will replace
+     * the currently registered output hopper.
+     * 
+     * @param jb Jukebox to register hopper with
+     * @param hopper Hopper to be registered
+     */
+    public void registerOutputHopper(Jukebox jb, Hopper hopper) {
+        get(jb).setOutput(hopper);
     }
     
 }
