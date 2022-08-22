@@ -14,15 +14,6 @@ public class BJCommand implements CommandExecutor {
     
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] mssg) {
-
-        for (JukeboxWrapper j : bedrockJukebox.getJukeboxes()) {
-
-            //sender.getServer().broadcastMessage(j.getBlock().toString() + j.getLocation().toString());
-            sender.getServer().broadcastMessage(j.getInputHopperBlock().toString());
-            sender.getServer().broadcastMessage(j.getInputHopperInventory().toString());
-            sender.getServer().broadcastMessage(j.getInputHopperInventory().getContents().toString());
-        }
-
         return true;
     }
 } 
