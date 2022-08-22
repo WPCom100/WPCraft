@@ -27,13 +27,13 @@ public class BJDiscDurationTask extends BukkitRunnable {
             return;
 
         // Check if output hopper is full
-        if (j.getOutputInventory().addItem(new ItemStack(j.getBlock().getPlaying())).size() == 1) {
+        if (j.getOutputInventory().addItem(new ItemStack(j.getJukebox().getPlaying())).size() == 1) {
             wpcraft.getServer().broadcastMessage("Output Hopper full");
             return;
         }
-        wpcraft.getServer().broadcastMessage("Output Disc to Output Hopper " + j.getBlock().getPlaying());
+        wpcraft.getServer().broadcastMessage("Output Disc to Output Hopper " + j.getJukebox().getPlaying());
         j.clearPlaying();
-        j.getBlock().update();
+        j.getJukebox().update();
 
         // Check for input hopper and play the next disc
         if (j.hasInputHopper())

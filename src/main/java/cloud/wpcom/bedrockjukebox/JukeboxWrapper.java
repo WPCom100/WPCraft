@@ -1,5 +1,6 @@
 package cloud.wpcom.bedrockjukebox;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,7 +35,7 @@ public class JukeboxWrapper {
         this.location = this.jukebox.getLocation();
     }
     
-    public Jukebox getBlock() {
+    public Jukebox getJukebox() {
         return jukebox;
     }
 
@@ -58,8 +59,13 @@ public class JukeboxWrapper {
     }
 
     @Nullable
-    public Hopper getInput(BlockFace bf) {  // TODO Check for null in uses
+    public Hopper getInput(BlockFace bf) { // TODO Check for null in uses
         return inputHoppers.get(bf);
+    }
+    
+    @Nullable
+    public Collection<Hopper> getInputs() { // TODO Check for null in uses
+        return inputHoppers.values();
     }
 
     public Block getInputHopperBlock(BlockFace bf) { //TODO Look at uses of this and see if it can be removed?
@@ -112,16 +118,17 @@ public class JukeboxWrapper {
         hasOutputHopper = true;
     }
     
-    public Hopper getOutput() {
+    @Nullable
+    public Hopper getOutput() { // TODO Check for null in uses
         return outputHopper;
     }
 
     public Block getOutputHopperBlock() {
-        return outputHopper.getBlock();
+        return (Block) getOutput();
     }
 
     public Inventory getOutputInventory() {
-        return outputHopper.getInventory();
+        return getOutput().getInventory();
     }
 
     public void removeOutputHopper() {
@@ -143,8 +150,6 @@ public class JukeboxWrapper {
 
     // Play the given record, creating a task to continue when the record is finished
     public void playRecord(ItemStack record, WPCraft wpcraft) {
-        if (record.getType() == Material.AIR)
-            return;
         jukebox.setRecord(record);
         if (jukebox.update())
             isPlaying = true;
@@ -153,6 +158,7 @@ public class JukeboxWrapper {
         durationTask.runTaskLater(wpcraft, BJUtil.getDiskDuration(record));
     }
 
+    @Deprecated // REMOVE
     public int getWaitingDisc() {
         int discIndex = -1;
         for (ItemStack i : getInputHopperInventory().getStorageContents()) {
@@ -167,6 +173,7 @@ public class JukeboxWrapper {
 
     // Gets the location of the first disc, and returns it as an ItemStack
     // Returns AIR if no disc is found
+    @Deprecated // REMOVE
     public ItemStack popWaitingDisc() { // TODO Have two similar functions that do the same thing, popInputHopperAtIndex(), combo using args
         int discIndex = getWaitingDisc();
         ItemStack waitingDisc = new ItemStack(Material.AIR);

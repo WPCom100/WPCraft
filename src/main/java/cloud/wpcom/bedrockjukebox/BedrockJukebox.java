@@ -14,10 +14,12 @@ public class BedrockJukebox {
     private final WPCraft wpcraft;
     private ArrayList<JukeboxWrapper> jukeboxes = new ArrayList<JukeboxWrapper>(0);
     private final JukeboxManager jukeboxManager;
+    private final JukeboxScheduler jukeboxScheduler;
 
     public BedrockJukebox(WPCraft wpcraft) {
         this.wpcraft = wpcraft;
         jukeboxManager = new JukeboxManager(this.wpcraft, this);
+        jukeboxScheduler = new JukeboxScheduler(this.wpcraft, this);
     }
 
     public void registerJukebox(Jukebox jb) {
@@ -45,7 +47,7 @@ public class BedrockJukebox {
         jukeboxManager.remove(jb);
     }  
 
-    @Deprecated
+    @Deprecated // REPLACED registerJukebox
     public void addJukebox(Jukebox jb, WPCraft plugin) {
         JukeboxWrapper jbw = new JukeboxWrapper(jb);
         jukeboxes.add(jbw);
@@ -62,7 +64,7 @@ public class BedrockJukebox {
         }
     }
 
-    @Deprecated
+    @Deprecated // REPLACED deregisterJukebox
     public void removeJukebox(Jukebox jb) {
         // Get the jukebox wrapper for the appropriate jukebox
         JukeboxWrapper jbw = getJukeboxAt(jb.getLocation());
@@ -73,12 +75,12 @@ public class BedrockJukebox {
         jukeboxes.remove(jbw);
     }
 
-    @Deprecated
+    @Deprecated // REMOVE
     public ArrayList<JukeboxWrapper> getJukeboxes() {
         return jukeboxes;
     }
 
-    @Deprecated
+    @Deprecated // REMOVE, or move to jukebox manager if needed
     public JukeboxWrapper getJukeboxAt(Location l) {
         for (JukeboxWrapper jb : jukeboxes) {
             if (jb.getLocation().equals(l)) {
@@ -88,17 +90,31 @@ public class BedrockJukebox {
         return null;
     }
 
-    @Deprecated
+    @Deprecated // REMOVE
     public boolean jukeboxExist(BlockState b) {
         for (JukeboxWrapper j : jukeboxes) {
-            if (j.getBlock().getLocation().equals(b.getBlock().getLocation())) {
+            if (j.getJukebox().getLocation().equals(b.getBlock().getLocation())) {
                 return true;
             }
         }
         return false;
     }
 
+    /**
+     * Get the {@link JukeboxManager} for the plugin
+     * 
+     * @return The manager 
+     */
     public JukeboxManager getManager() {
         return jukeboxManager;
+    }
+
+    /**
+     * Get the {@link JukeboxScheduler} for the plugin
+     * 
+     * @return The scheduler
+     */
+    public JukeboxScheduler getScheduler() {
+        return jukeboxScheduler;
     }
 }

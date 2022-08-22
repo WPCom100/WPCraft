@@ -3,12 +3,14 @@ package cloud.wpcom.bedrockjukebox;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.Hopper;
 import org.bukkit.block.Jukebox;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -30,41 +32,74 @@ public class BJEvents implements Listener {
         this.bedrockJukebox = bedrockJukebox;
     }
 
+    /**
+     * Handles the movment of items moved by hoppers.
+     * Checks if a disc should be played, and plays it.
+     * 
+     * @param event Event that occrued
+     */
     @EventHandler
-    public void hopperListener(InventoryMoveItemEvent event) {
+    public void inputHopperListener(InventoryMoveItemEvent event) {
+        // Checks if moving item is a disc
         if ((!event.getItem().getType().isRecord()))
             return;
+
+        // Checks if item was moved to an input hopper
+        final Hopper hopper = (Hopper) event.getDestination().getHolder();
+        final JukeboxWrapper jbw = bedrockJukebox.getManager().get(hopper);
+        if (jbw == null)
+            return;
+
+        // Checks if the input hopper is locked
+        if (hopper.isLocked())
+            return;
         
-        // Check if the disc moved to an input hopper on a registred Jukebox
-        for (JukeboxWrapper j : bedrockJukebox.getJukeboxes()) {
-            if (!event.getDestination().equals(j.getInputHopperInventory()))
-                continue;
-            // Check for overloading a jukebox
-            if (j.getBlock().getRecord().getType() != Material.AIR)
-                return;
-            // Schedule task to play disc next tick
-            new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            j.playRecord(j.popWaitingDisc(), wpcraft);
-                        }
-                    }.runTask(wpcraft); 
+        // Checks if jukebox is already playing
+        if (jbw.isPlaying())
+            return;
 
-        } // TODO CHECK FOR LOCKED HOPPER
-
+        // Schedule task to play disc next tick
+        new BukkitRunnable() { // TODO Make a scheduler for these checking tasks. Make it where a request to check is made next tick. Maybe a constantly running task? run every 1 sec
+            @Override
+            public void run() {
+                jbw.playRecord(jbw.popWaitingDisc(), wpcraft);
+                }
+        }.runTask(wpcraft);
     }
 
     // Handles players transfering discs into input hoppers manually
+    /**
+     * Handles the movment of items moved by players.
+     * Checks if a disc should be played, and plays it.
+     * 
+     * @param event Event that occrued
+     */
     @EventHandler
-    public void inputHopperCheck(InventoryClickEvent event) { // TODO SHIFT HOLD MOVES BREAK THE MOD
-        // Ignores clicks outside of the gui
-        if (event.getSlotType() == InventoryType.SlotType.OUTSIDE)
+    public void inputHopperCheck(InventoryClickEvent event) { // TODO SHIFT HOLD MOVES BREAK THE MOD?
+        // Checks if click was an inventory slot
+        if (event.getSlotType() != InventoryType.SlotType.CONTAINER)
             return;
 
-        // Check if the shift click/click was with a record
-        if ((!event.getCurrentItem().getType().isRecord()) && (!event.getCursor().getType().isRecord())) {
+        // Check if event was a left click
+        if (event.getClick() == ClickType.LEFT) {
+            // Checks if the item was a record
+            //if ((!event.getCurrentItem().getType().isRecord()) && (!event.getCursor().getType().isRecord()))
+            event.getWhoClicked()
+                    .sendMessage("Left-Current Item: " + event.getCurrentItem() + " Cursor: " + event.getCursor());
+            return;
+            // Check if the clicked inventory was an input hopper
+        }
+
+        if (event.getClick() == ClickType.SHIFT_LEFT) {
+
+            event.getWhoClicked()
+                    .sendMessage("ShiftL-Current Item: " + event.getCurrentItem() + " Cursor: " + event.getCursor());
             return;
         }
+            
+
+        
+        
 
         for (JukeboxWrapper j : bedrockJukebox.getJukeboxes()) {
             // Discs should not be played by jukeboxes with active music
@@ -77,7 +112,7 @@ public class BJEvents implements Listener {
                 return;
             
             // Check for overloading a jukebox
-            if (j.getBlock().getPlaying() != Material.AIR)
+            if (j.getJukebox().getPlaying() != Material.AIR)
                 return;
 
             // Schedule to play next tick
@@ -120,7 +155,7 @@ public class BJEvents implements Listener {
         }
 
         if (event.getClickedInventory().equals(j.getOutputInventory())) {
-            if (j.getBlock().getPlaying() != Material.AIR)
+            if (j.getJukebox().getPlaying() != Material.AIR)
                 checkHopperNextTick(j);
 
             return true;
@@ -132,7 +167,7 @@ public class BJEvents implements Listener {
             if (!event.getWhoClicked().getOpenInventory().getTopInventory().equals(j.getOutputInventory()))
                 return false;
 
-            if (j.getBlock().getPlaying() != Material.AIR)
+            if (j.getJukebox().getPlaying() != Material.AIR)
                 checkHopperNextTick(j);
 
             return true;
@@ -146,7 +181,7 @@ public class BJEvents implements Listener {
                     @Override
                     public void run() {
                         // If the output hopper is still full
-                        if (j.getOutputInventory().addItem(new ItemStack(j.getBlock().getPlaying())).size() == 1)
+                        if (j.getOutputInventory().addItem(new ItemStack(j.getJukebox().getPlaying())).size() == 1)
                             return;
                         
                         j.clearPlaying();
@@ -174,7 +209,7 @@ public class BJEvents implements Listener {
                 }
 
                 // If the hopper is facing the registered Jukebox
-                if (BJUtil.isHopperFacing((Jukebox) j.getBlock().getBlockData(), event.getBlock())) {
+                if (BJUtil.isHopperFacing((Jukebox) j.getJukebox().getBlockData(), event.getBlock())) {
                     // Set input Hopper
                     j.setInputHopperBlock(event.getBlock());
                     return;
@@ -269,7 +304,7 @@ public class BJEvents implements Listener {
                 continue;
             if (!j.isPlaying()) {
                 // Full output hopper check
-                if (j.getBlock().getRecord().getType() != Material.AIR) {
+                if (j.getJukebox().getRecord().getType() != Material.AIR) {
                     j.clearPlaying();
                     return;
                 } else

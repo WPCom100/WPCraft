@@ -44,7 +44,7 @@ public class BJUtil {
             case MUSIC_DISC_OTHERSIDE:
                 return 3900L;
             default:
-                return 0L;
+                return 5000L;
         }
     }
 
@@ -66,6 +66,7 @@ public class BJUtil {
     }
 
     // Checks if a input hopper is attached to (facing) a jukebox and registers them
+    @Deprecated // Moving to BedrockJukebox // TODO this
     public static void registerInputHoppers(JukeboxManager jukeboxManager, Jukebox jb) {
         // Check if jukebox exists
         if (jukeboxManager.get(jb) == null) {
@@ -105,6 +106,7 @@ public class BJUtil {
     }
 
     // Checks if a output hopper is below a jukebox and registers it
+    @Deprecated // Moving to BedrockJukebox // TODO this
     public static void registerOutputHopper(JukeboxManager jukeboxManager, Jukebox jb) {
         final Block blockToCheck = jb.getLocation().getBlock().getRelative(BlockFace.DOWN);
         if (blockToCheck.getType() == Material.HOPPER) {
@@ -116,7 +118,7 @@ public class BJUtil {
 
     // Returns item at a location in a hopper, removing it. AKA Popping
     // Returns AIR if no disc is found
-    @Deprecated // TODO RECREATE (MHS)
+    @Deprecated // REMOVE
     public static ItemStack popHopperAtIndex(int index, JukeboxWrapper j) {
         ItemStack waitingDisc = new ItemStack(Material.AIR);
         if (index == -1)
@@ -129,6 +131,7 @@ public class BJUtil {
     }
 
     // If a disc is waiting in the input hopper, play it next
+    @Deprecated // REMOVE
     public static void playNext(JukeboxWrapper j, WPCraft plugin) {
         int discIndex = j.getWaitingDisc();
         if (discIndex != -1) {

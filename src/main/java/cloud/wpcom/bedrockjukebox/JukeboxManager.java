@@ -48,15 +48,41 @@ public class JukeboxManager {
     }
 
     /**
-     * Gets the jukebox wrapper for the given jukebox. Returns
+     * Gets the {@link JukeboxWrapper} for the given jukebox. Returns
      * {@code null} if not found.
      * 
      * @param jb Jukebox to look for
-     * @return Wrapper of the jukebox or null
+     * @return Wrapper of the associated jukebox or null
      */
     @Nullable
     public JukeboxWrapper get(Jukebox jb) {
         return jukeboxes.get(jb);
+    }
+
+    /**
+     * Gets the {@link JukeboxWrapper} for the given hopper. Returns
+     * {@code null} if not found.
+     * 
+     * @param hopper Hopper to look for
+     * @return Wrapper of the associated jukebox or null
+     */
+    @Nullable
+    public JukeboxWrapper get(Hopper hopper) {
+        for (JukeboxWrapper jbw : jukeboxes.values()) {
+            // Check if jukebox has input hoppers
+            if (!jbw.hasInputHopper()) {
+                continue;
+            }
+
+            // If so, go through them and compare to the given hopper
+            for (Hopper h : jbw.getInputs()) {
+                if (h.equals(hopper)) {
+                    return jbw;
+                }
+            }
+        }
+
+        return null;
     }
 
     /**
