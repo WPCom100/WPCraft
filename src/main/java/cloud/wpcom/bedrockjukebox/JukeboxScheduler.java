@@ -14,7 +14,6 @@ import cloud.wpcom.WPCraft;
 public class JukeboxScheduler extends BukkitRunnable {
 
     private final WPCraft wpcraft;
-    private final BedrockJukebox bedrockJukebox;
     private Map<JukeboxWrapper, UpdateType> toCheck;
 
     /**
@@ -26,7 +25,6 @@ public class JukeboxScheduler extends BukkitRunnable {
      */
     public JukeboxScheduler(WPCraft wpcraft, BedrockJukebox bedrockJukebox) {
         this.wpcraft = wpcraft;
-        this.bedrockJukebox = bedrockJukebox;
         this.toCheck = new HashMap<>();
         runTaskTimer(wpcraft, 20L, 20L);
     }

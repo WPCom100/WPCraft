@@ -6,10 +6,7 @@ import org.bukkit.command.CommandSender;
 
 public class BJCommand implements CommandExecutor {
 
-    private final BedrockJukebox bedrockJukebox;
-
     public BJCommand(BedrockJukebox bedrockJukebox) {
-        this.bedrockJukebox = bedrockJukebox;
     }
     
     @Override

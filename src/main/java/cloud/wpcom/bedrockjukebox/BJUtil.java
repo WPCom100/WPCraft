@@ -10,7 +10,6 @@ import org.bukkit.block.Hopper;
 import org.bukkit.block.Jukebox;
 import org.bukkit.block.data.Directional;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
 
 import cloud.wpcom.WPCraft;
 

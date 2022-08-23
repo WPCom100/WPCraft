@@ -9,14 +9,11 @@ import javax.annotation.Nullable;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Hopper;
 import org.bukkit.block.Jukebox;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 import cloud.wpcom.WPCraft;
 
 public class JukeboxManager {
     
-    private final WPCraft wpcraft;
-    private final BedrockJukebox bedrockJukebox;
     private Map<Jukebox, JukeboxWrapper> jukeboxes;
 
     /**
@@ -26,8 +23,6 @@ public class JukeboxManager {
      * @param bedrockJukebox Instance of the {@link BedrockJukebox} class
      */
     public JukeboxManager(WPCraft wpcraft, BedrockJukebox bedrockJukebox) {
-        this.wpcraft = wpcraft;
-        this.bedrockJukebox = bedrockJukebox;
         jukeboxes = new HashMap<>();
     }
 
