@@ -1,0 +1,18 @@
+input hopper checks:
+
+item auto transfers to input hopper (itemMovementListener)
+input hopper is unlocked
+left click with record on hopper inv
+shift click a non hopper inv slot w/ record in with open hopper inventory on top
+Shift hold moves on non hopper inv. w/ record w/ hopper inventory on top.
+item thrown into input hopper from top
+disc ejected manuely from jukebox
+disc ejected automaticly from jukebox into output hopper
+
+output hopper checks:
+
+left click on output hopper inventory slot
+item pulled out of output hopper automaticly (itemMovementListener)
+shift left click on hopper inventory
+
+piston moved hopper?

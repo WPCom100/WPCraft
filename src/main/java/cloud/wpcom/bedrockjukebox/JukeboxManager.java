@@ -3,11 +3,13 @@ package cloud.wpcom.bedrockjukebox;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Hopper;
 import org.bukkit.block.Jukebox;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import cloud.wpcom.WPCraft;
 
@@ -34,7 +36,7 @@ public class JukeboxManager {
      * 
      * @param jb A bukkit Jukebox
      */
-    public void add(Jukebox jb) {
+    public void add(@Nonnull Jukebox jb) {
         jukeboxes.put(jb, new JukeboxWrapper(jb));
     }
 
@@ -43,7 +45,7 @@ public class JukeboxManager {
      * 
      * @param jb The jukebox to remove
      */
-    public void remove(Jukebox jb) {
+    public void remove(@Nonnull Jukebox jb) {
         jukeboxes.remove(jb);
     }
 
@@ -55,7 +57,7 @@ public class JukeboxManager {
      * @return Wrapper of the associated jukebox or null
      */
     @Nullable
-    public JukeboxWrapper get(Jukebox jb) {
+    public JukeboxWrapper get(@Nonnull Jukebox jb) {
         return jukeboxes.get(jb);
     }
 
@@ -67,7 +69,7 @@ public class JukeboxManager {
      * @return Wrapper of the associated jukebox or null
      */
     @Nullable
-    public JukeboxWrapper get(Hopper hopper) {
+    public JukeboxWrapper get(@Nonnull Hopper hopper) {
         for (JukeboxWrapper jbw : jukeboxes.values()) {
             // Check if jukebox has input hoppers
             if (!jbw.hasInputHopper()) {
@@ -92,7 +94,7 @@ public class JukeboxManager {
      * @param jb Jukebox to register hopper with
      * @param hopper Hopper to be registered
      */
-    public void registerInputHopper(Jukebox jb, Hopper hopper, BlockFace bf) {
+    public void registerInputHopper(@Nonnull Jukebox jb, @Nonnull Hopper hopper, @Nonnull BlockFace bf) {
         get(jb).addInput(hopper, bf);
     }
 
@@ -104,7 +106,7 @@ public class JukeboxManager {
      * @param jb Jukebox to register hopper with
      * @param hopper Hopper to be registered
      */
-    public void registerOutputHopper(Jukebox jb, Hopper hopper) {
+    public void registerOutputHopper(@Nonnull Jukebox jb, @Nonnull Hopper hopper) {
         get(jb).setOutput(hopper);
     }
     

@@ -1,5 +1,8 @@
 package cloud.wpcom.bedrockjukebox;
 
+import javax.annotation.Nonnull;
+
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -7,6 +10,7 @@ import org.bukkit.block.Hopper;
 import org.bukkit.block.Jukebox;
 import org.bukkit.block.data.Directional;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 import cloud.wpcom.WPCraft;
 
@@ -137,5 +141,29 @@ public class BJUtil {
         if (discIndex != -1) {
             j.playRecord(BJUtil.popHopperAtIndex(discIndex, j), plugin);
         }
+    }
+
+    /**
+     * Calculates the jukebox {@link BlockFace} that a hopper is
+     * facing
+     * 
+     * @param jbw Wrapper of the jukebox to check
+     * @param block Block used to calculate the blockface
+     * @return The blockface of the jukebox to which the hopper is located
+     */
+    public static BlockFace calcBlockFace(@Nonnull Jukebox jbw, @Nonnull Block block) {
+        final Location diffrence = jbw.getLocation().subtract(block.getLocation());
+        if (diffrence.getX() == -1) {
+            return BlockFace.EAST;
+        } else if (diffrence.getX() == 1) {
+            return BlockFace.WEST;
+        } else if (diffrence.getZ() == 1) {
+            return BlockFace.NORTH;
+        } else if (diffrence.getZ() == -1) {
+            return BlockFace.SOUTH;
+        } else if (diffrence.getY() == -1) {
+            return BlockFace.UP;
+        }
+        return null;
     }
 }

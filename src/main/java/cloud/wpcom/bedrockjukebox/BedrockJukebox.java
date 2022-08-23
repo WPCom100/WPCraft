@@ -27,16 +27,7 @@ public class BedrockJukebox {
         BJUtil.registerInputHoppers(jukeboxManager, jb);
         BJUtil.registerOutputHopper(jukeboxManager, jb);
         
-        // Plays disc from input hopper on next tick
-        // TODO Do this somewhere else? funcitoned out?
-        if (jukeboxManager.get(jb).hasInputHopper()) {
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    jukeboxManager.get(jb).playRecord(jukeboxManager.get(jb).popWaitingDisc(), wpcraft);
-                }
-            }.runTask(wpcraft);
-        }
+        // TODO schedule input  hopper check
     }
 
     public void deregisterJukebox(Jukebox jb) {
@@ -49,30 +40,30 @@ public class BedrockJukebox {
 
     @Deprecated // REPLACED registerJukebox
     public void addJukebox(Jukebox jb, WPCraft plugin) {
-        JukeboxWrapper jbw = new JukeboxWrapper(jb);
-        jukeboxes.add(jbw);
-        // BJUtil.registerInputHoppers(jbw);
-        // BJUtil.registerOutputHopper(jbw);
-        // Plays disc from input hopper on next tick
-        if (jbw.hasInputHopper()) {
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    jbw.playRecord(jbw.popWaitingDisc(), plugin);
-                }
-            }.runTask(plugin);
-        }
+        // JukeboxWrapper jbw = new JukeboxWrapper(jb);
+        // jukeboxes.add(jbw);
+        // // BJUtil.registerInputHoppers(jbw);
+        // // BJUtil.registerOutputHopper(jbw);
+        // // Plays disc from input hopper on next tick
+        // if (jbw.hasInputHopper()) {
+        //     new BukkitRunnable() {
+        //         @Override
+        //         public void run() {
+        //             jbw.playRecord(jbw.popWaitingDisc(), plugin);
+        //         }
+        //     }.runTask(plugin);
+        // }
     }
 
     @Deprecated // REPLACED deregisterJukebox
     public void removeJukebox(Jukebox jb) {
-        // Get the jukebox wrapper for the appropriate jukebox
-        JukeboxWrapper jbw = getJukeboxAt(jb.getLocation());
+        // // Get the jukebox wrapper for the appropriate jukebox
+        // JukeboxWrapper jbw = getJukeboxAt(jb.getLocation());
 
-        // Stop any running tasks before removing it
-        if (jbw.durationTask != null)
-            jbw.durationTask.cancel();
-        jukeboxes.remove(jbw);
+        // // Stop any running tasks before removing it
+        // if (jbw.durationTask != null)
+        //     jbw.durationTask.cancel();
+        // jukeboxes.remove(jbw);
     }
 
     @Deprecated // REMOVE

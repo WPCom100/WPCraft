@@ -2,6 +2,7 @@ package cloud.wpcom.bedrockjukebox;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 import org.bukkit.Material;
 import org.bukkit.block.Hopper;
@@ -70,6 +71,7 @@ public class JukeboxScheduler extends BukkitRunnable {
         new BukkitRunnable() {
             @Override
             public void run() {
+                wpcraft.getLogger().log(Level.INFO, "Input update running...");
                 // Check if jukebox has an output hopper
                 if (!jbw.hasInputHopper())
                     return;
@@ -100,6 +102,7 @@ public class JukeboxScheduler extends BukkitRunnable {
      * @param jbw Jukebox to check
      */
     private void updateOutputHoppers(JukeboxWrapper jbw) {
+        wpcraft.getLogger().log(Level.INFO, "Output update running...");
         new BukkitRunnable() {
             @Override
             public void run() {
