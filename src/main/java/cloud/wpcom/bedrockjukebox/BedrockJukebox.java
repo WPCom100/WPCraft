@@ -3,10 +3,14 @@ package cloud.wpcom.bedrockjukebox;
 import java.util.ArrayList;
 
 import org.bukkit.Location;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.Hopper;
 import org.bukkit.block.Jukebox;
 
 import cloud.wpcom.WPCraft;
+import cloud.wpcom.WPLogger;
+import cloud.wpcom.bedrockjukebox.JukeboxScheduler.UpdateType;
 
 public class BedrockJukebox {
 
@@ -14,25 +18,36 @@ public class BedrockJukebox {
     private ArrayList<JukeboxWrapper> jukeboxes = new ArrayList<JukeboxWrapper>(0);
     private final JukeboxManager jukeboxManager;
     private final JukeboxScheduler jukeboxScheduler;
+    private final WPLogger logger;
 
     public BedrockJukebox(WPCraft wpcraft) {
         this.wpcraft = wpcraft;
+        this.logger = new WPLogger(wpcraft, "BedrockJukebox", true);
         jukeboxManager = new JukeboxManager(this.wpcraft, this);
         jukeboxScheduler = new JukeboxScheduler(this.wpcraft, this);
     }
 
     public void registerJukebox(Jukebox jb) {
+        final JukeboxWrapper jbw = jukeboxManager.add(jb);
+        final ArrayList<BlockFace> bf = BJUtil.calcHopperFaces(jb);
+        //Register the jukebox
         jukeboxManager.add(jb);
-        BJUtil.registerInputHoppers(jukeboxManager, jb);
-        BJUtil.registerOutputHopper(jukeboxManager, jb);
+
+        // Register output and input hoppers
+        if (bf.contains(BlockFace.DOWN)) {
+            jukeboxManager.registerOutputHopper(jb, (Hopper) jb.getBlock().getRelative(BlockFace.DOWN).getState());
+            bf.remove(BlockFace.DOWN);
+        }
+        bf.forEach(face -> jukeboxManager.registerInputHopper(jb, (Hopper) jb.getBlock().getRelative(face).getState(), face));
         
-        // TODO schedule input  hopper check
+        // Schedule input hopper update
+        getScheduler().scheduleUpdate(jbw, UpdateType.INPUT);
     }
 
     public void deregisterJukebox(Jukebox jb) {
         // Stop any running tasks before removing it
-        if (jukeboxManager.get(jb).durationTask != null) // TODO Duration task private instead of public
-            jukeboxManager.get(jb).durationTask.cancel();
+        if (jukeboxManager.get(jb).getDurationTask() != null)
+            jukeboxManager.get(jb).clearDurationTask();
 
         jukeboxManager.remove(jb);
     }  
@@ -106,5 +121,14 @@ public class BedrockJukebox {
      */
     public JukeboxScheduler getScheduler() {
         return jukeboxScheduler;
+    }
+
+    /**
+     * Get the {@link WPLogger} for the plugin
+     * 
+     * @return The logger
+     */
+    public WPLogger getLogger() {
+        return logger;
     }
 }

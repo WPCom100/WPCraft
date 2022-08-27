@@ -19,6 +19,7 @@ import cloud.wpcom.WPCraft;
 
 public class JukeboxWrapper {
 
+    private final BedrockJukebox bedrockJukebox;
     private final Jukebox jukebox;
     private final Location location;
     private boolean hasInputHopper = false;
@@ -28,9 +29,10 @@ public class JukeboxWrapper {
     private Map<BlockFace, Hopper> inputHoppers = new HashMap<>();
     private Hopper outputHopper;
     private boolean isPlaying = false;
-    public BJDiscDurationTask durationTask;
+    private BJDiscDurationTask durationTask;
     
-    public JukeboxWrapper(Jukebox j) {
+    public JukeboxWrapper(BedrockJukebox bedrockJukebox, Jukebox j) {
+        this.bedrockJukebox = bedrockJukebox;
         this.jukebox = j;
         this.location = this.jukebox.getLocation();
     }
@@ -154,7 +156,7 @@ public class JukeboxWrapper {
         if (jukebox.update())
             isPlaying = true;
 
-        durationTask = new BJDiscDurationTask(wpcraft, this);
+        durationTask = new BJDiscDurationTask(bedrockJukebox, this);
         durationTask.runTaskLater(wpcraft, BJUtil.getDiskDuration(record));
     }
 
@@ -184,5 +186,14 @@ public class JukeboxWrapper {
             getInputHopperInventory().clear(discIndex);
             return waitingDisc;
         }
+    }
+
+    public BJDiscDurationTask getDurationTask() {
+        return durationTask;
+    }
+
+    public void clearDurationTask() {
+        durationTask.cancel();
+        durationTask = null;
     }
 }

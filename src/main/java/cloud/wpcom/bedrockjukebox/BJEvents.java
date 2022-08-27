@@ -1,7 +1,5 @@
 package cloud.wpcom.bedrockjukebox;
 
-import java.util.logging.Level;
-
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -11,10 +9,8 @@ import org.bukkit.block.Hopper;
 import org.bukkit.block.Jukebox;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -192,6 +188,7 @@ public class BJEvents implements Listener {
 
     // Used by functions that handle full output hoppers
     // Schedules output hopper to be checked next tick
+    @Deprecated
     public void checkHopperNextTick(JukeboxWrapper j) {
         new BukkitRunnable() {
             @Override
@@ -218,8 +215,8 @@ public class BJEvents implements Listener {
         // Check if the block placed is a Jukebox
         if (event.getBlockPlaced().getType() == Material.JUKEBOX) {
             // Register the jukebox
-            bedrockJukebox.getManager().add((Jukebox) event.getBlock().getState()); //TODO Change to bedrocjukebox.registerJukebox()
-            wpcraft.getLogger().log(Level.INFO, "Jukebox registered");
+            bedrockJukebox.registerJukebox((Jukebox) event.getBlock().getState());
+            bedrockJukebox.getLogger().debug("Jukebox registered");
             return;
 
         // Check if the block placed is a Hopper
@@ -233,7 +230,7 @@ public class BJEvents implements Listener {
                 final BlockFace bf = BJUtil.calcBlockFace(jbw.getJukebox(), event.getBlock());
                 jbw.addInput((Hopper) event.getBlock().getState(), bf);
                 jbw.getInput(bf).getInventory().addItem(new ItemStack(Material.BEEF, 1));
-                wpcraft.getLogger().log(Level.INFO, "Input hopper registered to the " + bf);
+                bedrockJukebox.getLogger().debug("Input hopper registered to the " + bf);
             }
 
             // Check if it was placed below a jukebox
@@ -242,7 +239,7 @@ public class BJEvents implements Listener {
                 final JukeboxWrapper jbw = bedrockJukebox.getManager().get((Jukebox) above.getState());
                 jbw.setOutput((Hopper) event.getBlock().getState());
                 jbw.getOutput().getInventory().addItem(new ItemStack(Material.LANTERN, 1));
-                wpcraft.getLogger().log(Level.INFO, "Output hopper registered");
+                bedrockJukebox.getLogger().debug("Output hopper registered");
             }
         }
     }

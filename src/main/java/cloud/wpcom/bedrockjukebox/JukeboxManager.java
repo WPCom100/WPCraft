@@ -14,6 +14,7 @@ import cloud.wpcom.WPCraft;
 
 public class JukeboxManager {
     
+    private final BedrockJukebox bedrockJukebox;
     private Map<Jukebox, JukeboxWrapper> jukeboxes;
 
     /**
@@ -23,6 +24,7 @@ public class JukeboxManager {
      * @param bedrockJukebox Instance of the {@link BedrockJukebox} class
      */
     public JukeboxManager(WPCraft wpcraft, BedrockJukebox bedrockJukebox) {
+        this.bedrockJukebox = bedrockJukebox;
         jukeboxes = new HashMap<>();
     }
 
@@ -30,9 +32,12 @@ public class JukeboxManager {
      * Adds a jukebox to the manager 
      * 
      * @param jb A bukkit Jukebox
+     * @return jbw The newly created {@link JukeboxWrapper}
      */
-    public void add(@Nonnull Jukebox jb) {
-        jukeboxes.put(jb, new JukeboxWrapper(jb));
+    public JukeboxWrapper add(@Nonnull Jukebox jb) {
+        final JukeboxWrapper jbw = new JukeboxWrapper(bedrockJukebox, jb);
+        jukeboxes.put(jb, jbw);
+        return jbw;
     }
 
     /**
