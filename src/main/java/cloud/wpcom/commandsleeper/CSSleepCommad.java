@@ -19,7 +19,7 @@ public class CSSleepCommad implements TabExecutor {
 
     private final WPCraft wpcraft;
     private final CommandSleeper commandSleeper;
-    
+
     public CSSleepCommad(@Nonnull WPCraft wpcraft, @Nonnull CommandSleeper commandSleeper) {
         this.wpcraft = wpcraft;
         this.commandSleeper = commandSleeper;
@@ -38,16 +38,17 @@ public class CSSleepCommad implements TabExecutor {
 
             return true;
         }
-        
+
         // Check if player is sleeping in a bed already, trollll them
         if (playerSender.isSleeping()) {
-            TextComponent trollMessage = new TextComponent("For you Taylor: https://media2.giphy.com/media/5ftsmLIqktHQA/giphy.gif");
+            TextComponent trollMessage = new TextComponent(
+                    "For you Taylor: https://media2.giphy.com/media/5ftsmLIqktHQA/giphy.gif");
             trollMessage.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL,
                     "https://media2.giphy.com/media/5ftsmLIqktHQA/giphy.gif"));
             playerSender.spigot().sendMessage(trollMessage);
             return true;
         }
-        
+
         // Checks to make sure someone is sleeping in a bed, send a request if not
         if (!CSUtil.hasPhysicalSleeper(playerSender.getWorld())) {
             wpcraft.getServer()
@@ -57,9 +58,10 @@ public class CSSleepCommad implements TabExecutor {
 
             return true;
         }
-        
+
         // Add to the list of sleeping players
-        commandSleeper.addCommandSleeper(playerSender, new CSVirtualBedExpiryTask(wpcraft, commandSleeper, playerSender));
+        commandSleeper.addCommandSleeper(playerSender,
+                new CSVirtualBedExpiryTask(wpcraft, commandSleeper, playerSender));
 
         // Send chat message
         wpcraft.getServer()
@@ -71,10 +73,10 @@ public class CSSleepCommad implements TabExecutor {
 
         return true;
     }
-    
-    @Override  // Not needed for the mod
+
+    @Override // Not needed for the mod
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-       
+
         return null;
     }
 
