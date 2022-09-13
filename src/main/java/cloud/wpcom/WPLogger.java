@@ -18,6 +18,7 @@ public class WPLogger {
     public WPLogger(WPCraft wpcraft, String pluginName, boolean isDebug) {
         this.wpcraft = wpcraft;
         this.pluginName = '[' + pluginName + "] ";
+        this.isDebug = isDebug;
     }
 
     /**

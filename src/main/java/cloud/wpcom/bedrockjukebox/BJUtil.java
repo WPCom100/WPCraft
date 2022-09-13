@@ -3,6 +3,7 @@ package cloud.wpcom.bedrockjukebox;
 import java.util.ArrayList;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -11,8 +12,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.Jukebox;
 import org.bukkit.block.data.Directional;
 import org.bukkit.inventory.ItemStack;
-
-import cloud.wpcom.WPCraft;
 
 public class BJUtil {
 
@@ -80,7 +79,7 @@ public class BJUtil {
      * @param jb Jukebox to check
      * @return Faces of the jukebox that have a hopper
      */
-    public static ArrayList<BlockFace> calcHopperFaces(Jukebox jb) {
+    public static ArrayList<BlockFace> calcHopperFaces(Jukebox jb) { // TODO Needs to return null if none are found, not blank arraylist
         ArrayList<BlockFace> hopperFaces = new ArrayList<>();
         Block blockToCheck;
 
@@ -91,7 +90,6 @@ public class BJUtil {
                 hopperFaces.add(BlockFace.NORTH);
             }
         }
-
         // EAST
         blockToCheck = jb.getLocation().getBlock().getRelative(BlockFace.EAST);
         if (blockToCheck.getType() == Material.HOPPER) {
@@ -99,7 +97,6 @@ public class BJUtil {
                 hopperFaces.add(BlockFace.EAST);
             }
         }
-
         // SOUTH
         blockToCheck = jb.getLocation().getBlock().getRelative(BlockFace.SOUTH);
         if (blockToCheck.getType() == Material.HOPPER) {
@@ -107,7 +104,6 @@ public class BJUtil {
                 hopperFaces.add(BlockFace.SOUTH);
             }
         }
-
         // WEST
         blockToCheck = jb.getLocation().getBlock().getRelative(BlockFace.WEST);
         if (blockToCheck.getType() == Material.HOPPER) {
@@ -115,7 +111,6 @@ public class BJUtil {
                 hopperFaces.add(BlockFace.WEST);
             }
         }
-
         // ABOVE
         blockToCheck = jb.getLocation().getBlock().getRelative(BlockFace.UP);
         if (blockToCheck.getType() == Material.HOPPER) {
@@ -123,7 +118,6 @@ public class BJUtil {
                 hopperFaces.add(BlockFace.UP);
             }
         }
-
         // BELOW
         blockToCheck = jb.getLocation().getBlock().getRelative(BlockFace.DOWN);
         if (blockToCheck.getType() == Material.HOPPER) {
@@ -133,28 +127,6 @@ public class BJUtil {
         return hopperFaces;
     }
 
-    // Returns item at a location in a hopper, removing it. AKA Popping
-    // Returns AIR if no disc is found
-    @Deprecated // REMOVE
-    public static ItemStack popHopperAtIndex(int index, JukeboxWrapper j) {
-        ItemStack waitingDisc = new ItemStack(Material.AIR);
-        if (index == -1)
-            return waitingDisc;
-        else {
-            waitingDisc = j.getInputHopperInventory().getItem(index).clone();
-            j.getInputHopperInventory().clear(index);
-            return waitingDisc;
-        }
-    }
-
-    // If a disc is waiting in the input hopper, play it next
-    @Deprecated // REMOVE
-    public static void playNext(JukeboxWrapper j, WPCraft plugin) {
-        int discIndex = j.getWaitingDisc();
-        if (discIndex != -1) {
-            j.playRecord(BJUtil.popHopperAtIndex(discIndex, j), plugin);
-        }
-    }
 
     /**
      * Calculates the jukebox {@link BlockFace} that a hopper is
@@ -162,21 +134,62 @@ public class BJUtil {
      * 
      * @param jbw Wrapper of the jukebox to check
      * @param block Block used to calculate the blockface
-     * @return The blockface of the jukebox to which the hopper is located
+     * @return The blockface of the jukebox to which the hopper is located, or null
      */
-    public static BlockFace calcBlockFace(@Nonnull Jukebox jbw, @Nonnull Block block) {
+    @Nullable
+    public static BlockFace calcHopperFacing(@Nonnull Jukebox jbw, @Nonnull Block block) {
         final Location diffrence = jbw.getLocation().subtract(block.getLocation());
-        if (diffrence.getX() == -1) {
+        if (diffrence.getX() == -1)
             return BlockFace.EAST;
-        } else if (diffrence.getX() == 1) {
+        
+        else if (diffrence.getX() == 1)
             return BlockFace.WEST;
-        } else if (diffrence.getZ() == 1) {
-            return BlockFace.NORTH;
-        } else if (diffrence.getZ() == -1) {
+        
+        else if (diffrence.getZ() == 1)
+                return BlockFace.NORTH;
+        
+        else if (diffrence.getZ() == -1)
             return BlockFace.SOUTH;
-        } else if (diffrence.getY() == -1) {
+        
+        else if (diffrence.getY() == -1)
             return BlockFace.UP;
-        }
+
         return null;
+    }
+
+    /**
+     * Calculates the blockfaces that has the specified material.
+     * Ex. Checking to see if a block is next to another block type
+     * 
+     * @param block Block to check around
+     * @param material Material to check around the block for
+     * @return Block faces that have the material, or null
+     */
+    @Nullable
+    public static ArrayList<BlockFace> calcAdjacentBlock(Block block, Material material) { // TODO CHECK IF BLOCK FACES ARE RIGHT OR OPPOSIT
+        final Location l = block.getLocation();
+        ArrayList<BlockFace> bf = new ArrayList<>();
+        if (l.subtract(1, 0, 0).getBlock().getType() == material)
+            bf.add(BlockFace.EAST);
+
+        if (l.subtract(-1, 0, 0).getBlock().getType() == material)
+            bf.add(BlockFace.WEST);
+
+        if (l.subtract(0, 1, 0).getBlock().getType() == material)
+            bf.add(BlockFace.UP);
+
+        if (l.subtract(0, -1, 0).getBlock().getType() == material)
+            bf.add(BlockFace.DOWN);
+
+        if (l.subtract(0, 0, 1).getBlock().getType() == material)
+            bf.add(BlockFace.NORTH);
+
+        if (l.subtract(0, 0, -1).getBlock().getType() == material)
+            bf.add(BlockFace.SOUTH);
+
+        if (bf.isEmpty())
+            return null;
+        
+        return bf;
     }
 }

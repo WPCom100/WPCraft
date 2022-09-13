@@ -43,7 +43,7 @@ public class WPCraft extends JavaPlugin {
 
         // Load BedrockJukebox
         BedrockJukebox bedrockJukebox = new BedrockJukebox(this);
-        getServer().getPluginManager().registerEvents(new BJEvents(this, bedrockJukebox), this);
+        getServer().getPluginManager().registerEvents(new BJEvents(bedrockJukebox), this);
         getCommand("jb").setExecutor(new BJCommand(bedrockJukebox));
         getLogger().info("BedrockJukebox loaded!");
 

@@ -1,18 +1,18 @@
 input hopper checks:
 
-item auto transfers to input hopper (itemMovementListener)
-input hopper is unlocked
-left click with record on hopper inv
-shift click a non hopper inv slot w/ record in with open hopper inventory on top
-Shift hold moves on non hopper inv. w/ record w/ hopper inventory on top.
-item thrown into input hopper from top
-disc ejected manuely from jukebox
-disc ejected automaticly from jukebox into output hopper
+item auto transfers to input hopper                                              (itemMovementListener)
+input hopper is unlocked                                                         (redstoneHopperInteractionListner)
+left click with record on hopper inv                                             (playerInventoryClickListener)
+shift click a non hopper inv slot w/ record in with open hopper inventory on top (playerInventoryClickListener)
+Shift hold moves on non hopper inv. w/ record
+item thrown into input hopper from top                                           (hopperPickupItemListener)
+disc ejected manuely from jukebox                                                (playerJukeboxInteractionListener)
+disc ejected automaticly from jukebox into output hopper                         (BJDiscDurationTask)
 
 output hopper checks:
 
-left click on output hopper inventory slot
-item pulled out of output hopper automaticly (itemMovementListener)
-shift left click on hopper inventory
+left click on output hopper inventory slot                                       (playerInventoryClickListener)
+item pulled out of output hopper automaticly                                     (itemMovementListener)
+shift left click on hopper inventory                                             (playerInventoryClickListener)
 
 piston moved hopper?

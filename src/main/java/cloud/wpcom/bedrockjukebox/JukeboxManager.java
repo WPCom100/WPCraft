@@ -10,8 +10,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.Hopper;
 import org.bukkit.block.Jukebox;
 
-import cloud.wpcom.WPCraft;
-
 public class JukeboxManager {
     
     private final BedrockJukebox bedrockJukebox;
@@ -20,10 +18,9 @@ public class JukeboxManager {
     /**
      * Manages and stores information on jukeboxes in the world
      * 
-     * @param wpcraft Instance of the plugin
      * @param bedrockJukebox Instance of the {@link BedrockJukebox} class
      */
-    public JukeboxManager(WPCraft wpcraft, BedrockJukebox bedrockJukebox) {
+    public JukeboxManager(BedrockJukebox bedrockJukebox) {
         this.bedrockJukebox = bedrockJukebox;
         jukeboxes = new HashMap<>();
     }
@@ -96,6 +93,7 @@ public class JukeboxManager {
      */
     public void registerInputHopper(@Nonnull Jukebox jb, @Nonnull Hopper hopper, @Nonnull BlockFace bf) {
         get(jb).addInput(hopper, bf);
+        bedrockJukebox.getLogger().debug("Input hopper registred to the " + bf);
     }
 
     /**
@@ -108,6 +106,7 @@ public class JukeboxManager {
      */
     public void registerOutputHopper(@Nonnull Jukebox jb, @Nonnull Hopper hopper) {
         get(jb).setOutput(hopper);
+        bedrockJukebox.getLogger().debug("Output hopper registred");
     }
     
 }
